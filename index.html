@@ -24,7 +24,20 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
-    background: var(--ink);
+    /* Site-wide background texture: 4000×4000 storm-grey gif, displayed
+       at 1000×1000 (50% of @2x intent — May 16 Hannah tuning). Repeats
+       to fill larger viewports. A 50% black overlay sits on top of the
+       gif via a stacked linear-gradient layer, simulating ~50% opacity
+       on the texture against the pure-black --ink base. .content-body
+       is set to transparent below so the gif shows behind page sections
+       too, not just the hero. */
+    background:
+      linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+      url('dark-grey-storm-background@2x.gif') var(--ink);
+    background-size: auto, 1000px 1000px;
+    background-repeat: no-repeat, repeat;
+    background-attachment: fixed, fixed;
+    background-position: center, center top;
     color: var(--parchment);
     font-family: 'Libre Franklin', sans-serif;
     font-weight: 300;
@@ -134,11 +147,16 @@
      wrong width on first paint and snaps later. A div with
      background-image has no replaced-element race. */
   .hero-stage {
+    /* Stage scaled to 130vmin on May 16 (was 100vmin) — Hannah wanted
+       the lighthouse + burst composition 30% bigger. The top/left calc
+       values shift to -65vmin (was -50vmin) so the stage center — the
+       lantern — stays anchored at viewport (15vw, 35vh). To revert,
+       change all three values back to 100vmin / 50vmin pair. */
     position: absolute;
-    width: 100vmin;
-    height: 100vmin;
-    top: calc(35vh - 50vmin);
-    left: calc(15vw - 50vmin);
+    width: 130vmin;
+    height: 130vmin;
+    top: calc(35vh - 65vmin);
+    left: calc(15vw - 65vmin);
     display: grid;
     grid-template-areas: "stack";
     pointer-events: none;
@@ -190,15 +208,23 @@
      a paired unit that moves as one. The cliff/rocks artwork lives at
      canvas y 45-65%, with grass below that.
 
-     `bottom: -8vh` pushes both layers down past the viewport bottom
-     by 8vh, sliding the visible cliff up so it meets the lighthouse
-     base. Tune this single value to slide the whole land+grass unit
-     up (less negative) or down (more negative) as a unit. */
+     `bottom: calc(-8vh - 50px)` pushes both layers down past the viewport
+     bottom — the -8vh handles the proportional offset, the additional
+     -50px is Hannah's tuning (May 16) to drop the grass blades behind
+     the painted cliff at hero start. Tune the additional pixel value
+     to slide the whole land+grass unit up (less negative) or down
+     (more negative) as a unit. */
   .parallax-layer {
+    /* height: 104vh on May 16 second pass — reduced 20% from the
+       130vh I'd set earlier today, because the bigger land was
+       pushing the cliff peak up into the lighthouse base. Bottom
+       offset increased from -50px to -150px (drops the unit another
+       100px lower at start). Keep .layer-grass width formula and
+       grass keyframe scale below in sync if changing this again. */
     position: absolute;
-    bottom: -8vh;
+    bottom: calc(-8vh - 140px);
     left: 0;
-    height: 100vh;
+    height: 104vh;
     width: auto;
     pointer-events: none;
     will-change: transform;
@@ -208,7 +234,16 @@
     height: 100%;
     width: auto;
   }
-  .layer-land { z-index: 4; }
+  .layer-land {
+    z-index: 4;
+    /* Land-only height override added May 16 — shrinks the land PNG
+       by ~5% (98.8vh = 104vh × 0.95) without touching the grass layer
+       or grass blade scale. Hannah's call after the wider painted
+       cliff dropped in. Width is auto so the PNG scales proportionally.
+       (Was 88.4vh / -15% briefly; that was too aggressive — the cliff
+       collapsed to a tuft.) */
+    height: 98.8vh;
+  }
   /* Grass clusters around the rocks — anchored to the same canvas
      as the lighthouse + land so it stays on the left as the browser
      resizes (no crowding when narrow, no thinning when wide).
@@ -222,10 +257,11 @@
      rendered at the same width as the grass layer so the horizontal
      extent matches. Position with `bottom: 0` so the divider's lower
      edge sits at the viewport bottom; tune that value to slide the
-     divider up or down across the grass bases. */
+     divider up or down across the grass bases. Adjusted to 5px
+     (was 55px) on May 16 to follow the land+grass 50px drop. */
   .layer-divider {
     position: absolute;
-    bottom: 55px;
+    bottom: -75px;
     left: 0;
     /* Width sized to cover just the grass extent (the grass blades
        cluster in the left ~68% of the land/grass layer, which itself
@@ -245,7 +281,11 @@
 
   .layer-grass {
     z-index: 5;
-    width: calc(100vh * 5551 / 4621);
+    /* Width formula uses 104vh to match the parallax-layer height
+       (May 16 second pass — was 130vh in the first pass, 100vh
+       originally). Aspect ratio of the canvas (5551 × 4621)
+       is preserved. */
+    width: calc(104vh * 5551 / 4621);
     /* No layer-level mask — the previous version applied the gradient
        on the layer container, but each blade has `will-change: transform`
        (for the sway animation) which puts it on its own GPU compositor
@@ -274,60 +314,64 @@
        gradient could. */
   }
   @keyframes sway {
-    /* scale(1.2) bakes the +20% size into the animation transform, so
-       it doesn't get overridden by the rotation animation. To revert
-       to original size, change scale(1.2) → scale(1) in both keyframes. */
-    0%   { transform: rotate(-2.5deg) scale(1.2); }
-    100% { transform: rotate(2.5deg) scale(1.2); }
+    /* scale(1.248) on May 16 second pass. Was 1.56 in the first
+       (overscaled) pass, was 1.2 before that. Calculation:
+       1.56 × 0.8 = 1.248 — keeps the grass 20% smaller than
+       the first-pass scaling, in proportion with the 104vh land.
+       To revert: 1.2 for original-with-bump, 1.0 for pure unscaled. */
+    0%   { transform: rotate(-2.5deg) scale(1.248); }
+    100% { transform: rotate(2.5deg) scale(1.248); }
   }
   /* All percentages here are of the canvas-width layer
      (100vh × 5551/4621 ≈ 120vh). Grass clusters in the left ~60% of
      the canvas, tapering smaller on the right edge so it dissolves
      into the dark rather than ending abruptly. */
   /* FRONT row — taller bunches at the foreground ground line. Spaced
-     ~6% apart for breathing room. Last 3 bunches scaled down to taper. */
-  .grass.g1  { left:  -1%; bottom: 30vh; height: 11vh;   animation-duration: 4.6s; animation-delay: -1.3s; }
-  .grass.g2  { left:   5%; bottom: 31vh; height: 12vh;   animation-duration: 5.2s; animation-delay: -0.4s; }
-  .grass.g3  { left:  11%; bottom: 30vh; height: 10vh;   animation-duration: 4.1s; animation-delay: -2.1s; }
-  .grass.g4  { left:  17%; bottom: 30vh; height: 13vh;   animation-duration: 5.0s; animation-delay: -1.7s; }
-  .grass.g5  { left:  23%; bottom: 31vh; height: 11vh;   animation-duration: 3.8s; animation-delay: -0.6s; }
-  .grass.g6  { left:  29%; bottom: 30vh; height: 12vh;   animation-duration: 4.7s; animation-delay: -2.4s; }
-  .grass.g7  { left:  35%; bottom: 30vh; height: 10vh;   animation-duration: 5.4s; animation-delay: -0.9s; }
-  .grass.g8  { left:  41%; bottom: 31vh; height: 11.5vh; animation-duration: 4.3s; animation-delay: -1.9s; }
-  .grass.g9  { left:  47%; bottom: 30vh; height:  9vh;   animation-duration: 5.1s; animation-delay: -0.2s; }
-  .grass.g10 { left:  53%; bottom: 30vh; height:  8vh;   animation-duration: 3.9s; animation-delay: -2.6s; }
+     ~6% apart for breathing room. Last 3 bunches scaled down to taper.
+     All left:% values multiplied by 1.2 on May 16 to spread the cluster
+     20% wider horizontally. To revert, divide each left value by 1.2. */
+  .grass.g1  { left:  -1.2%; bottom: 30vh; height: 11vh;   animation-duration: 4.6s; animation-delay: -1.3s; }
+  .grass.g2  { left:   6%;   bottom: 31vh; height: 12vh;   animation-duration: 5.2s; animation-delay: -0.4s; }
+  .grass.g3  { left:  13.2%; bottom: 30vh; height: 10vh;   animation-duration: 4.1s; animation-delay: -2.1s; }
+  .grass.g4  { left:  20.4%; bottom: 30vh; height: 13vh;   animation-duration: 5.0s; animation-delay: -1.7s; }
+  .grass.g5  { left:  27.6%; bottom: 31vh; height: 11vh;   animation-duration: 3.8s; animation-delay: -0.6s; }
+  .grass.g6  { left:  34.8%; bottom: 30vh; height: 12vh;   animation-duration: 4.7s; animation-delay: -2.4s; }
+  .grass.g7  { left:  42%;   bottom: 30vh; height: 10vh;   animation-duration: 5.4s; animation-delay: -0.9s; }
+  .grass.g8  { left:  49.2%; bottom: 31vh; height: 11.5vh; animation-duration: 4.3s; animation-delay: -1.9s; }
+  .grass.g9  { left:  56.4%; bottom: 30vh; height:  9vh;   animation-duration: 5.1s; animation-delay: -0.2s; }
+  .grass.g10 { left:  63.6%; bottom: 30vh; height:  8vh;   animation-duration: 3.9s; animation-delay: -2.6s; }
   /* Tapering — smaller bunches on the right edge dissolving away. */
-  .grass.g24 { left:  59%; bottom: 31vh; height:  6.5vh; animation-duration: 4.5s; animation-delay: -1.5s; }
-  .grass.g25 { left:  64%; bottom: 30vh; height:  5vh;   animation-duration: 5.0s; animation-delay: -2.8s; }
-  .grass.g26 { left:  68%; bottom: 30vh; height:  3.5vh; animation-duration: 4.2s; animation-delay: -0.7s; }
+  .grass.g24 { left:  70.8%; bottom: 31vh; height:  6.5vh; animation-duration: 4.5s; animation-delay: -1.5s; }
+  .grass.g25 { left:  76.8%; bottom: 30vh; height:  5vh;   animation-duration: 5.0s; animation-delay: -2.8s; }
+  .grass.g26 { left:  81.6%; bottom: 30vh; height:  3.5vh; animation-duration: 4.2s; animation-delay: -0.7s; }
   /* MIDDLE blades — between the bunches for density without
      overcrowding. Same tapering on the right. */
-  .grass.g11 { left:   2%; bottom: 31vh; height:  7vh;   animation-duration: 3.2s; animation-delay: -1.0s; }
-  .grass.g12 { left:   8%; bottom: 30vh; height:  8vh;   animation-duration: 3.6s; animation-delay: -2.3s; }
-  .grass.g13 { left:  14%; bottom: 31vh; height:  7.5vh; animation-duration: 3.4s; animation-delay: -0.7s; }
-  .grass.g14 { left:  20%; bottom: 30vh; height:  8vh;   animation-duration: 3.0s; animation-delay: -1.6s; }
-  .grass.g15 { left:  26%; bottom: 31vh; height:  7vh;   animation-duration: 3.7s; animation-delay: -2.0s; }
-  .grass.g16 { left:  32%; bottom: 30vh; height:  8vh;   animation-duration: 3.3s; animation-delay: -0.5s; }
-  .grass.g17 { left:  38%; bottom: 31vh; height:  7vh;   animation-duration: 3.5s; animation-delay: -2.2s; }
-  .grass.g18 { left:  44%; bottom: 30vh; height:  6.5vh; animation-duration: 3.8s; animation-delay: -1.1s; }
-  .grass.g19 { left:  50%; bottom: 31vh; height:  6vh;   animation-duration: 3.1s; animation-delay: -0.3s; }
-  .grass.g27 { left:  56%; bottom: 30vh; height:  5vh;   animation-duration: 3.4s; animation-delay: -1.8s; }
-  .grass.g28 { left:  61%; bottom: 31vh; height:  4vh;   animation-duration: 3.6s; animation-delay: -2.4s; }
-  .grass.g29 { left:  66%; bottom: 30vh; height:  3vh;   animation-duration: 3.2s; animation-delay: -0.9s; }
+  .grass.g11 { left:   2.4%; bottom: 31vh; height:  7vh;   animation-duration: 3.2s; animation-delay: -1.0s; }
+  .grass.g12 { left:   9.6%; bottom: 30vh; height:  8vh;   animation-duration: 3.6s; animation-delay: -2.3s; }
+  .grass.g13 { left:  16.8%; bottom: 31vh; height:  7.5vh; animation-duration: 3.4s; animation-delay: -0.7s; }
+  .grass.g14 { left:  24%;   bottom: 30vh; height:  8vh;   animation-duration: 3.0s; animation-delay: -1.6s; }
+  .grass.g15 { left:  31.2%; bottom: 31vh; height:  7vh;   animation-duration: 3.7s; animation-delay: -2.0s; }
+  .grass.g16 { left:  38.4%; bottom: 30vh; height:  8vh;   animation-duration: 3.3s; animation-delay: -0.5s; }
+  .grass.g17 { left:  45.6%; bottom: 31vh; height:  7vh;   animation-duration: 3.5s; animation-delay: -2.2s; }
+  .grass.g18 { left:  52.8%; bottom: 30vh; height:  6.5vh; animation-duration: 3.8s; animation-delay: -1.1s; }
+  .grass.g19 { left:  60%;   bottom: 31vh; height:  6vh;   animation-duration: 3.1s; animation-delay: -0.3s; }
+  .grass.g27 { left:  67.2%; bottom: 30vh; height:  5vh;   animation-duration: 3.4s; animation-delay: -1.8s; }
+  .grass.g28 { left:  73.2%; bottom: 31vh; height:  4vh;   animation-duration: 3.6s; animation-delay: -2.4s; }
+  .grass.g29 { left:  79.2%; bottom: 30vh; height:  3vh;   animation-duration: 3.2s; animation-delay: -0.9s; }
   /* BACK row — smaller distant blades, slightly higher Y suggests
      depth. Tapering similarly. */
-  .grass.g20 { left:   4%; bottom: 36vh; height:  4vh;   animation-duration: 2.8s; animation-delay: -1.8s; }
-  .grass.g21 { left:  10%; bottom: 36vh; height:  4.5vh; animation-duration: 3.0s; animation-delay: -2.5s; }
-  .grass.g22 { left:  16%; bottom: 36vh; height:  4vh;   animation-duration: 2.6s; animation-delay: -0.8s; }
-  .grass.g23 { left:  22%; bottom: 36vh; height:  4.5vh; animation-duration: 3.2s; animation-delay: -1.4s; }
-  .grass.g30 { left:  28%; bottom: 36vh; height:  4vh;   animation-duration: 2.9s; animation-delay: -2.0s; }
-  .grass.g31 { left:  34%; bottom: 36vh; height:  4.5vh; animation-duration: 3.1s; animation-delay: -0.6s; }
-  .grass.g32 { left:  40%; bottom: 36vh; height:  4vh;   animation-duration: 2.7s; animation-delay: -2.2s; }
-  .grass.g33 { left:  46%; bottom: 36vh; height:  3.5vh; animation-duration: 3.0s; animation-delay: -1.0s; }
-  .grass.g34 { left:  52%; bottom: 36vh; height:  3vh;   animation-duration: 2.8s; animation-delay: -2.6s; }
-  .grass.g35 { left:  58%; bottom: 36vh; height:  2.5vh; animation-duration: 3.2s; animation-delay: -1.5s; }
-  .grass.g36 { left:  63%; bottom: 36vh; height:  2vh;   animation-duration: 2.9s; animation-delay: -0.4s; }
-  .grass.g37 { left:  68%; bottom: 36vh; height:  1.5vh; animation-duration: 3.1s; animation-delay: -2.1s; }
+  .grass.g20 { left:   4.8%; bottom: 36vh; height:  4vh;   animation-duration: 2.8s; animation-delay: -1.8s; }
+  .grass.g21 { left:  12%;   bottom: 36vh; height:  4.5vh; animation-duration: 3.0s; animation-delay: -2.5s; }
+  .grass.g22 { left:  19.2%; bottom: 36vh; height:  4vh;   animation-duration: 2.6s; animation-delay: -0.8s; }
+  .grass.g23 { left:  26.4%; bottom: 36vh; height:  4.5vh; animation-duration: 3.2s; animation-delay: -1.4s; }
+  .grass.g30 { left:  33.6%; bottom: 36vh; height:  4vh;   animation-duration: 2.9s; animation-delay: -2.0s; }
+  .grass.g31 { left:  40.8%; bottom: 36vh; height:  4.5vh; animation-duration: 3.1s; animation-delay: -0.6s; }
+  .grass.g32 { left:  48%;   bottom: 36vh; height:  4vh;   animation-duration: 2.7s; animation-delay: -2.2s; }
+  .grass.g33 { left:  55.2%; bottom: 36vh; height:  3.5vh; animation-duration: 3.0s; animation-delay: -1.0s; }
+  .grass.g34 { left:  62.4%; bottom: 36vh; height:  3vh;   animation-duration: 2.8s; animation-delay: -2.6s; }
+  .grass.g35 { left:  69.6%; bottom: 36vh; height:  2.5vh; animation-duration: 3.2s; animation-delay: -1.5s; }
+  .grass.g36 { left:  75.6%; bottom: 36vh; height:  2vh;   animation-duration: 2.9s; animation-delay: -0.4s; }
+  .grass.g37 { left:  81.6%; bottom: 36vh; height:  1.5vh; animation-duration: 3.1s; animation-delay: -2.1s; }
 
   .parallax-scrim {
     position: absolute;
@@ -377,7 +421,10 @@
   .content-body {
     position: relative;
     z-index: 10;
-    background: var(--ink);
+    /* Was background: var(--ink); changed May 16 to transparent so the
+       body-level storm-grey background gif shows behind the page sections.
+       If section content needs the solid ink back, revert here. */
+    background: transparent;
   }
   section {
     padding: 100px 48px;
