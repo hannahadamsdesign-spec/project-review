@@ -73,29 +73,25 @@
 
      Mobile baseline below. Small-phone, tablet, and desktop overrides
      in media queries near the bottom of this stylesheet. */
-  /* Iter19 — mobile architecture refined against Hannah's side-by-side comp.
-     - Lighthouse smaller (1420 not 1700) → ~50% of viewport vertical
-     - Lantern moves slightly down to 160px
-     - Cliff cropped to taller aspect (1.5 not 3.25) → more visible content
-     - Cliff peak sits slightly ABOVE lighthouse rocks bottom (multiplier
-       0.22 not 0.248) so rocks visibly protrude above the cliff peak,
-       cliff appears BEHIND the rocks at the contact point
-     - Title sits in clean dark band below all hero artwork */
-  --lighthouse-asset: 1420px;
-  --lantern-top: 160px;
+  /* Iter20 — more conservative cliff position to prevent any title
+     overlap on iPhone Safari (where 100svh varies with chrome state).
+     - Lighthouse smaller (1300) — less dominant, room for cliff
+     - Cliff smaller (380) — leaves 100+ px clearance below to title
+     - Title padding-bottom increased from 4vh to 7vh */
+  --lighthouse-asset: 1300px;
+  --lantern-top: 175px;
   --lantern-x: 50%;
-  --burst-size: 1100px;
+  --burst-size: 1050px;
 
   /* Land/cliff — MOBILE uses cropped land-mobile.png (1650×1100,
-     aspect 1.5, peak at asset x=57.6%, y=14.8%). Tablet/desktop
-     swap displayed size below. --land-peak-y computed dynamically
-     from lighthouse position so cliff peak is right at (or slightly
-     above) lighthouse rocks bottom. */
-  --land-asset: 440px;
+     aspect 1.5, peak at asset x=57.6%, y=14.8%). Static vh-based
+     positioning (not calc) for predictable behavior across Safari
+     chrome states on iOS. */
+  --land-asset: 380px;
   --land-aspect: 1.5;
   --land-peak-x: 0.576;
   --land-peak-y-frac: 0.148;
-  --land-peak-y: calc(var(--lantern-top) + 0.22 * var(--lighthouse-asset));
+  --land-peak-y: 56vh;
   --land-image: url('land-mobile.png');
 
   /* Layout */
@@ -323,10 +319,12 @@ a { color: inherit; }
    title sits close to the cliff base. */
 /* Title + nav anchored to bottom 25% of viewport, in a clean dark
    band BELOW all hero artwork. Hard rule per Hannah: title must
-   NEVER overlap the lighthouse / cliff / cloud animation. */
+   NEVER overlap the lighthouse / cliff / cloud animation.
+   Iter20: increased bottom padding from 4vh to 7vh + safe-area inset
+   to ensure clearance from cliff on iPhone Safari. */
 .hero-content {
   position: absolute;
-  bottom: 4vh;
+  bottom: calc(7vh + env(safe-area-inset-bottom, 0px));
   left: 0;
   right: 0;
   padding: 0 24px;
@@ -565,10 +563,11 @@ a { color: inherit; }
    doesn't collide with the title/nav content anchored at the bottom. */
 @media (max-width: 379px) {
   :root {
-    --lighthouse-asset: 1250px;
-    --lantern-top: 140px;
-    --burst-size: 960px;
-    --land-asset: 400px;
+    --lighthouse-asset: 1150px;
+    --lantern-top: 155px;
+    --burst-size: 900px;
+    --land-asset: 340px;
+    --land-peak-y: 54vh;
   }
 }
 
@@ -576,15 +575,15 @@ a { color: inherit; }
    prose constrained for readability, release grid splits to 2 columns. */
 @media (min-width: 768px) {
   :root {
-    --lighthouse-asset: 2000px;
-    --lantern-top: 180px;
+    --lighthouse-asset: 1800px;
+    --lantern-top: 220px;
     --lantern-x: 50%;
-    --burst-size: 1550px;
-    /* Updated to match the new aspect-1.5 cropped land-mobile.png. */
-    --land-asset: 650px;
+    --burst-size: 1400px;
+    --land-asset: 560px;
     --land-aspect: 1.5;
     --land-peak-x: 0.576;
     --land-peak-y-frac: 0.148;
+    --land-peak-y: 58vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
   }
@@ -623,14 +622,15 @@ a { color: inherit; }
    note about getting desktop closer to v1. */
 @media (min-width: 1024px) {
   :root {
-    --lighthouse-asset: 1600px;
-    --lantern-top: 140px;
+    --lighthouse-asset: 1450px;
+    --lantern-top: 170px;
     --lantern-x: 50%;
-    --burst-size: 1250px;
-    --land-asset: 600px;
+    --burst-size: 1150px;
+    --land-asset: 520px;
     --land-aspect: 1.5;
     --land-peak-x: 0.576;
     --land-peak-y-frac: 0.148;
+    --land-peak-y: 60vh;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
