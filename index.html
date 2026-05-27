@@ -20,21 +20,46 @@
     --warm-white: #f5f0e6;
     --line: rgba(232, 224, 208, 0.1);
     --line-strong: rgba(232, 224, 208, 0.18);
+
+    /* ====================== FLUID HERO SCALING ======================
+       Added 2026-05-18 to make the hero composition look right at any
+       viewport width, not just full-screen desktop. Previously the
+       stage was a fixed 130vmin and the upward shift was a fixed -120px
+       — these values were tuned for ~1700px-wide windows and broke at
+       intermediate widths (Brave half-screen, tablet portrait, etc.).
+
+       --stage-size scales the lighthouse + burst stage. At wide
+       landscape widths the 130vh cap dominates (matches the prior
+       desktop tuning of 130vmin since vmin = vh there). At narrow or
+       portrait widths the 90vw cap kicks in so the lighthouse never
+       exceeds 90% of viewport width. Result: at any size, the
+       lighthouse fits the viewport with breathing room.
+
+       --upward-shift scales the May 18 100/120px upward nudge so
+       short viewports don't push the lantern off the top. On tall
+       desktop screens it caps at 120px (matches Hannah's tuning).
+       On phones it scales down to ~85-100px so the lighthouse stays
+       grounded. The same variable drives the land+grass and divider
+       offsets below — composition rides up/down as a single unit. */
+    --stage-size: min(130vh, 90vw);
+    --upward-shift: clamp(40px, 12vh, 120px);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
     /* Site-wide background texture: 4000×4000 storm-grey gif, displayed
-       at 1000×1000 (50% of @2x intent — May 16 Hannah tuning). Repeats
-       to fill larger viewports. A 50% black overlay sits on top of the
-       gif via a stacked linear-gradient layer, simulating ~50% opacity
-       on the texture against the pure-black --ink base. .content-body
-       is set to transparent below so the gif shows behind page sections
-       too, not just the hero. */
+       at 500×500 (May 18 — Hannah halved the tile from 1000px to 500px
+       to see how a denser texture reads; was 50% of @2x intent on May 16).
+       Repeats to fill larger viewports. A 50% black overlay sits on top
+       of the gif via a stacked linear-gradient layer, simulating ~50%
+       opacity on the texture against the pure-black --ink base.
+       .content-body is set to transparent below so the gif shows behind
+       page sections too, not just the hero. To return to the May 16
+       sizing, change both `500px` values back to `1000px`. */
     background:
       linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
       url('dark-grey-storm-background@2x.gif') var(--ink);
-    background-size: auto, 1000px 1000px;
+    background-size: auto, 500px 500px;
     background-repeat: no-repeat, repeat;
     background-attachment: fixed, fixed;
     background-position: center, center top;
@@ -106,15 +131,17 @@
     height: auto;
   }
   .cloud-a {
-    /* Wide cloud, drifting upper-mid area, left-to-right. */
-    top: 8vh;
+    /* Wide cloud, drifting upper-mid area, left-to-right.
+       May 18: `top` reduced by 120px to follow the lighthouse-up-120px move. */
+    top: calc(8vh - 120px);
     width: 21vw;
     opacity: 0.22;
     animation: cloud-drift-a 150s linear infinite;
   }
   .cloud-b {
-    /* Thin cloud, drifting middle area, right-to-left at different speed. */
-    top: 28vh;
+    /* Thin cloud, drifting middle area, right-to-left at different speed.
+       May 18: `top` reduced by 120px to follow the lighthouse-up-120px move. */
+    top: calc(28vh - 120px);
     width: 13.5vw;
     opacity: 0.28;
     animation: cloud-drift-b 190s linear infinite;
@@ -151,12 +178,28 @@
        the lighthouse + burst composition 30% bigger. The top/left calc
        values shift to -65vmin (was -50vmin) so the stage center — the
        lantern — stays anchored at viewport (15vw, 35vh). To revert,
-       change all three values back to 100vmin / 50vmin pair. */
+       change all three values back to 100vmin / 50vmin pair.
+
+       May 18 PM: replaced fixed `130vmin` stage and fixed `-120px`
+       upward shift with the fluid `--stage-size` and `--upward-shift`
+       variables on :root. At Hannah's desktop width (~1700×1000) the
+       fluid values resolve to the same 1300px stage / 120px shift as
+       the previous fixed setup. At narrow widths they scale down so
+       the lighthouse doesn't dominate and the upward shift doesn't
+       push the lantern off the top.
+
+       May 18 PM (second pass — Boat-style proportional rewire): the
+       horizontal anchor is now `0.20 * --stage-size` (the lantern sits
+       at 20% of the stage size from its left edge — what Hannah's
+       desktop intent was: lantern at 15vw on a 1700-wide screen, with
+       a 1300px stage, equals 19.6% of stage). Anchoring to --stage-size
+       instead of viewport-width keeps the lantern locked above the
+       cliff peak as the whole composition shrinks together. */
     position: absolute;
-    width: 130vmin;
-    height: 130vmin;
-    top: calc(35vh - 65vmin);
-    left: calc(15vw - 65vmin);
+    width: var(--stage-size);
+    height: var(--stage-size);
+    top: calc(35vh - var(--stage-size) / 2 - var(--upward-shift));
+    left: calc(var(--stage-size) * -0.30);
     display: grid;
     grid-template-areas: "stack";
     pointer-events: none;
@@ -175,7 +218,23 @@
   }
   .stage-burst-back {
     background-image: url('back-layer-burst-CENTERED.svg');
-    animation: stage-rotate 240s linear infinite;
+    /* scaleY squashes the burst into a horizontal ellipse. The rotation
+       still spins the SVG underneath, so rays "breathe" wider and
+       narrower as they go around — the coin-on-a-table effect Hannah
+       picked May 18.
+
+       Tuning: 1.0 = full circle (original); 0.65 = starting value;
+       0.5 = strongly squashed. Change the value in TWO places: the
+       static transform here AND inside @keyframes stage-rotate-squashed
+       below. Keep them identical or the burst will jump when the
+       animation begins / ends.
+
+       The static transform is what holds the squash visible under
+       prefers-reduced-motion (when the keyframe animation is disabled
+       further down). Without it, reduced-motion users would see a full
+       round burst — not what we want visually. */
+    transform: scaleY(0.65);
+    animation: stage-rotate-squashed 240s linear infinite;
     opacity: 0.55;
     z-index: 1;
   }
@@ -202,6 +261,16 @@
   @keyframes stage-rotate {
     to { transform: rotate(360deg); }
   }
+  /* Back-burst keyframe — combines the squash with the rotation so the
+     scaleY isn't overridden mid-animation. Both keyframes carry the
+     same scaleY value as the static .stage-burst-back transform above
+     (currently 0.65); change them together. The original stage-rotate
+     keyframe is kept intact for the (currently commented-out) front
+     burst, which used it in reverse. */
+  @keyframes stage-rotate-squashed {
+    from { transform: scaleY(0.65) rotate(0deg); }
+    to   { transform: scaleY(0.65) rotate(360deg); }
+  }
 
   /* ============ LAND + GRASS — non-stage layers ============
      The land + grass canvas (5551×4621) is locked together — they're
@@ -220,11 +289,24 @@
        pushing the cliff peak up into the lighthouse base. Bottom
        offset increased from -50px to -150px (drops the unit another
        100px lower at start). Keep .layer-grass width formula and
-       grass keyframe scale below in sync if changing this again. */
+       grass keyframe scale below in sync if changing this again.
+
+       May 18 PM: rewired to use the :root --upward-shift variable
+       so the land+grass moves up/down in lockstep with the fluid
+       hero stage at any viewport width. At Hannah's desktop the
+       value resolves to the same `calc(-8vh - 20px)` as the prior
+       fixed tuning.
+
+       May 18 PM (second pass — Boat-style proportional rewire): height
+       now scales with --stage-size (was 104vh). At Hannah's typical
+       desktop (vh=1000, stage=1300) the value resolves to 1040 — the
+       same 104vh as before. At narrow widths the land tracks the
+       lighthouse, so the cliff peak stays under the lantern instead
+       of growing out of proportion. */
     position: absolute;
-    bottom: calc(-8vh - 140px);
+    bottom: calc(-8vh - 140px + var(--upward-shift));
     left: 0;
-    height: 104vh;
+    height: calc(var(--stage-size) * 0.8);
     width: auto;
     pointer-events: none;
     will-change: transform;
@@ -241,8 +323,13 @@
        or grass blade scale. Hannah's call after the wider painted
        cliff dropped in. Width is auto so the PNG scales proportionally.
        (Was 88.4vh / -15% briefly; that was too aggressive — the cliff
-       collapsed to a tuft.) */
-    height: 98.8vh;
+       collapsed to a tuft.)
+
+       May 18 PM (Boat-style proportional rewire): rewired to scale
+       with --stage-size. 0.76 = 0.8 (parallax-layer height ratio) ×
+       0.95 (land-specific shrink). Resolves to 988px at Hannah's
+       typical desktop — matching the prior 98.8vh value. */
+    height: calc(var(--stage-size) * 0.76);
   }
   /* Grass clusters around the rocks — anchored to the same canvas
      as the lighthouse + land so it stays on the left as the browser
@@ -260,14 +347,24 @@
      divider up or down across the grass bases. Adjusted to 5px
      (was 55px) on May 16 to follow the land+grass 50px drop. */
   .layer-divider {
+    /* May 18 PM: rewired to use the :root --upward-shift variable so
+       the divider tracks the land+grass at any viewport width. At
+       Hannah's desktop this resolves to `bottom: 45px` (matches the
+       prior fixed tuning).
+
+       May 18 PM (Boat-style proportional rewire): width now scales
+       with --stage-size. 0.615 ≈ 80vh / 1300px at Hannah's typical
+       desktop, so this resolves to 800px there — matches the prior
+       80vh value. At narrow widths the divider shrinks with the
+       grass cluster instead of staying at viewport-height scale. */
     position: absolute;
-    bottom: -75px;
+    bottom: calc(-75px + var(--upward-shift));
     left: 0;
     /* Width sized to cover just the grass extent (the grass blades
        cluster in the left ~68% of the land/grass layer, which itself
        is ~120vh wide → grass extends to roughly 80vh from left).
        Anchored at left: 0 so it stays locked to the lower-left. */
-    width: 80vh;
+    width: calc(var(--stage-size) * 0.615);
     height: auto;
     z-index: 6;
     pointer-events: none;
@@ -284,8 +381,15 @@
     /* Width formula uses 104vh to match the parallax-layer height
        (May 16 second pass — was 130vh in the first pass, 100vh
        originally). Aspect ratio of the canvas (5551 × 4621)
-       is preserved. */
-    width: calc(104vh * 5551 / 4621);
+       is preserved.
+
+       May 18 PM (Boat-style proportional rewire): rewired to scale
+       with --stage-size so grass width tracks land height tracks
+       lighthouse stage as one unit. 0.8 = parallax-layer height
+       ratio; 5551/4621 = canvas aspect. Resolves to 1249px at
+       Hannah's typical desktop — matching the prior calc(104vh *
+       5551 / 4621). */
+    width: calc(var(--stage-size) * 0.8 * 5551 / 4621);
     /* No layer-level mask — the previous version applied the gradient
        on the layer container, but each blade has `will-change: transform`
        (for the sway animation) which puts it on its own GPU compositor
@@ -685,7 +789,53 @@
     .listen-links { flex-direction: column; }
     .listen-link { justify-content: center; }
     .book-layout { grid-template-columns: 140px 1fr; gap: 24px; }
-    .hero-content { bottom: 8vh; }
+
+    /* ====================== MOBILE HERO TUNING ======================
+       Desktop values don't translate to portrait phones. The desktop
+       stage is 130vmin (bigger than a phone's viewport width), anchored
+       at 15vw (jams the lighthouse against the left edge), shifted up
+       120px (too aggressive for a short phone screen). Mobile overrides
+       below re-tune everything as a unit. Added 2026-05-18. */
+
+    /* Hero stage: scaled down to 90vmin (fits comfortably inside the
+       phone viewport with breathing room) and re-anchored. Lantern at
+       28vw from left, 45vh from top — slightly left of center, slightly
+       above middle. The desktop -120px upward shift is dropped on
+       mobile because the screen is too short for it to make sense. */
+    .hero-stage {
+      width: 90vmin;
+      height: 90vmin;
+      top: calc(45vh - 45vmin);
+      left: calc(28vw - 45vmin);
+    }
+
+    /* Land + grass: drop the desktop 120px upward shift on mobile and
+       keep the layer near the bottom of the viewport. The cliff art
+       sits at the left of the canvas, so the cliff peak appears under
+       the left-anchored lighthouse — same compositional logic as
+       desktop, just at a smaller scale. */
+    .parallax-layer {
+      bottom: calc(-8vh - 30px);
+    }
+
+    /* Divider follows the land. */
+    .layer-divider {
+      bottom: -50px;
+    }
+
+    /* Hero title: anchor at top of hero instead of desktop's top:200px
+       (which on a phone overlaps the lighthouse). Override the desktop
+       `top` and clear any inherited `bottom`. */
+    .hero-content {
+      top: 70px;
+      bottom: auto;
+    }
+
+    /* Background tile scaled down on mobile so the texture grain reads
+       at a similar perceived density relative to viewport size. */
+    body {
+      background-size: auto, 300px 300px;
+    }
   }
   @media (max-width: 480px) {
     .releases-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -714,39 +864,41 @@
 </nav>
 
 <div class="parallax-hero" id="parallaxHero">
-  <!-- CLOUD LAYER: ambient drift behind everything else. Two painted
-       clouds at different speeds and opposite directions. -->
+  <!-- CLOUD LAYER removed 2026-05-18 — Hannah pulling the existing
+       cloud PNGs out to make a new set of greyscale background +
+       cloud elements that sit on top of the storm-grey body tile (no
+       parallax / drift on the background layer, animation on the new
+       cloud layer). When new artwork lands, restore this block with
+       the new <img> srcs and adjust .cloud-a / .cloud-b CSS values
+       below to match. The CSS rules (.cloud-layer, .cloud, .cloud-a,
+       .cloud-b, @keyframes cloud-drift-a/b) are left in place as a
+       template — they're inert with the div removed.
   <div class="cloud-layer" aria-hidden="true">
     <img class="cloud cloud-a" src="cloud 2@2x.png" alt="">
     <img class="cloud cloud-b" src="cloud 3.png" alt="">
   </div>
+  -->
+
   <!-- HERO STAGE: square canvas-shared layers (lighthouse + bursts).
        All three CENTERED assets share a square canvas with the lantern
        at the geometric center, so CSS Grid (every layer in the same
        grid-area) stacks them with automatic alignment. -->
   <div class="hero-stage" data-speed="0.15" id="heroStage">
     <div class="stage-layer stage-burst-back"></div>
-    <div class="stage-layer stage-burst-front"></div>
+    <!-- stage-burst-front (painted burst PNG) removed 2026-05-16 — Hannah's call.
+         The CSS rule .stage-burst-front and the @media reduced-motion override
+         remain in place commented but unused; to restore, re-add this <div>. -->
     <div class="stage-layer stage-lighthouse"></div>
   </div>
   <div class="parallax-layer layer-land" data-speed="0.35" id="layerLand">
     <img src="land-in-place.png" alt="">
   </div>
   <div class="parallax-layer layer-grass" data-speed="0.35" id="layerGrass">
-    <!-- BACK row — smaller distant blades, rendered first so they
-         sit behind the front row in DOM order. -->
-    <img class="grass g20" src="blade-19.png" alt="">
-    <img class="grass g21" src="blade-16.png" alt="">
-    <img class="grass g22" src="blade-18.png" alt="">
-    <img class="grass g23" src="blade-20.png" alt="">
-    <img class="grass g30" src="blade-19.png" alt="">
-    <img class="grass g31" src="blade-16.png" alt="">
-    <img class="grass g32" src="blade-20.png" alt="">
-    <img class="grass g33" src="blade-18.png" alt="">
-    <img class="grass g34" src="blade-19.png" alt="">
-    <img class="grass g35" src="blade-16.png" alt="">
-    <img class="grass g36" src="blade-20.png" alt="">
-    <img class="grass g37" src="blade-18.png" alt="">
+    <!-- BACK row removed 2026-05-16 — Hannah's call. The 12 distant
+         tiny blades (g20-g23, g30-g37) at bottom: 36vh, heights 1.5-4.5vh
+         were intended as depth perspective but read as awkward floating
+         tiny grass above the main cluster. CSS rules for g20-g37 remain
+         in the stylesheet, unused; to restore, re-add these <img> tags. -->
     <!-- MIDDLE individual blades fill gaps. -->
     <img class="grass g11" src="blade-04.png" alt="">
     <img class="grass g12" src="blade-07.png" alt="">
