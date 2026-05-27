@@ -73,17 +73,27 @@
 
      Mobile baseline below. Small-phone, tablet, and desktop overrides
      in media queries near the bottom of this stylesheet. */
-  --lighthouse-asset: 1200px;
-  --lantern-top: 300px;
-  --lantern-x: 50%;     /* centered horizontally on standard phones */
-  --burst-size: 900px;
+  /* Iter15 — mobile architecture matching Hannah's detail mockup.
+     Lighthouse asset has visible art only in middle 30% (content y=47..76%),
+     so asset size must be ~3x bigger than the visible art we want.
+     Target: lighthouse fills ~60% of viewport vertical, base at 65vh.
+     - Lighthouse: lantern at ~14vh, base (rocky pile) at ~65vh
+     - Cliff: jagged silhouette, edge-to-edge, peak at 65vh under base
+     - Title: clean dark band at bottom, no animation overlap */
+  --lighthouse-asset: 1700px;
+  --lantern-top: 125px;
+  --lantern-x: 50%;
+  --burst-size: 1300px;
 
-  /* Land/cliff layer — asset 5551×4621 (aspect 1.20), content bbox
-     y=2031..2977 (mid 54.2% from asset top) and x=0..3858 (mid 34.75%
-     from asset left). Sized per breakpoint; anchored so the content
-     midpoint lands at (50%, --land-mid-y) in the viewport. */
-  --land-asset: 1500px;
-  --land-mid-y: 86vh;
+  /* Land/cliff — MOBILE uses cropped land-mobile.png (2600×800,
+     aspect 3.25, peak at asset x=50%, y=20.9%). Tablet/desktop
+     switch to full land-in-place.png below. */
+  --land-asset: 480px;
+  --land-aspect: 3.25;
+  --land-peak-x: 0.5;
+  --land-peak-y-frac: 0.209;
+  --land-peak-y: 65vh;
+  --land-image: url('land-mobile.png');
 
   /* Layout */
   --section-pad-x: 24px;
@@ -154,47 +164,46 @@ a { color: inherit; }
   animation: cloud-breathe 24s ease-in-out infinite;
 }
 
-/* Cloud A — heavy foundation of left cluster (newcloud-02: 813×939,
-   aspect 0.87). Anchors the upper-left with full opacity. */
+/* Cloud A — top-left silhouette (newcloud-01: 1584×669, aspect 2.37).
+   Iter12: switched to wide-narrow horizontal silhouette per PS comp.
+   Smaller, simpler — clouds are framing details, not focal points. */
 .cloud-a {
-  top: -1vh;
-  left: -10vw;
-  width: 56vw;
-  aspect-ratio: 0.87;
-  background-image: url('newcloud-02.png');
+  top: 0vh;
+  left: -3vw;
+  width: 35vw;
+  aspect-ratio: 2.37;
+  background-image: url('newcloud-01.png');
   background-position: top left;
-  opacity: 1.0;
+  opacity: 0.85;
   z-index: 2;
 }
 
-/* Cloud B — top-right wisp (newcloud-03: 1208×582, aspect 2.08).
-   Smaller than the left cluster — wispy, not heavy. */
+/* Cloud B — top-right silhouette (newcloud-05: 1435×590, aspect 2.43). */
 .cloud-b {
-  top: 0vh;
-  right: -8vw;
-  width: 45vw;
-  aspect-ratio: 2.08;
-  background-image: url('newcloud-03.png');
+  top: 1vh;
+  right: -3vw;
+  width: 32vw;
+  aspect-ratio: 2.43;
+  background-image: url('newcloud-05.png');
   background-position: top right;
-  opacity: 0.85;
+  opacity: 0.8;
   animation-delay: -10s;
   z-index: 2;
 }
 
-/* Cloud C — extends the left cluster to the right (newcloud-04:
-   1150×1068, aspect 1.08). Overlaps cloud-A on its right side and
-   continues beyond into the upper-middle area, giving the cluster
-   visible multi-cloud width matching the PS comp. */
+/* Cloud C — hidden on mobile (2 clouds only on phones per PS comp).
+   Revealed at tablet+ as a third atmospheric layer. */
 .cloud-c {
-  top: 2vh;
-  left: 28vw;
-  width: 36vw;
+  display: none;
+  top: 8vh;
+  left: 30vw;
+  width: 28vw;
   aspect-ratio: 1.08;
   background-image: url('newcloud-04.png');
   background-position: top center;
-  opacity: 0.92;
+  opacity: 0.75;
   animation-delay: -16s;
-  z-index: 3;
+  z-index: 2;
 }
 
 /* Cloud D — appears at TABLET+ (newcloud-01: 1584×669, aspect 2.37).
@@ -267,22 +276,21 @@ a { color: inherit; }
   to   { transform: scaleY(0.75) rotate(360deg); }
 }
 
-/* Land/cliff layer — sits BETWEEN the back-burst (z-3) and the
-   lighthouse (z-5) so the cliff peak appears under the lighthouse
-   base. Asset is left-anchored within its own canvas; we position
-   by its CONTENT midpoint (34.75% horizontal, 54.2% vertical) so
-   sizing math is independent of the asset's empty padding. */
+/* Land/cliff layer — background-image div so we can swap assets per
+   breakpoint (mobile uses cropped land-mobile.png; tablet+ uses full
+   land-in-place.png). z-index 4 puts it BEHIND the lighthouse (z 5)
+   so the lighthouse stands clearly in front of the cliff.
+   Asset positioned by its PEAK coordinate so the lighthouse base
+   lands directly on the cliff peak. */
 .land {
   position: absolute;
   width: var(--land-asset);
-  height: auto;
-  max-width: none;
-  top: var(--land-mid-y);
-  left: 50%;
-  /* Pull asset up so content midpoint lands at top/left.
-     Asset height = land-asset / 1.20 (aspect 1.20). */
-  margin-left: calc(var(--land-asset) * -0.3475);
-  margin-top: calc((var(--land-asset) / 1.20) * -0.542);
+  aspect-ratio: var(--land-aspect);
+  background: var(--land-image) no-repeat center / contain;
+  top: var(--land-peak-y);
+  left: var(--lantern-x);
+  margin-left: calc(var(--land-asset) * (var(--land-peak-x) * -1));
+  margin-top: calc((var(--land-asset) / var(--land-aspect)) * (var(--land-peak-y-frac) * -1));
   pointer-events: none;
   z-index: 4;
 }
@@ -310,9 +318,12 @@ a { color: inherit; }
 /* ============ HERO CONTENT (title + nav) ============
    Anchored to the bottom of the hero with minimal gutter so the
    title sits close to the cliff base. */
+/* Title + nav anchored to bottom 25% of viewport, in a clean dark
+   band BELOW all hero artwork. Hard rule per Hannah: title must
+   NEVER overlap the lighthouse / cliff / cloud animation. */
 .hero-content {
   position: absolute;
-  bottom: 2vh;
+  bottom: 4vh;
   left: 0;
   right: 0;
   padding: 0 24px;
@@ -551,11 +562,11 @@ a { color: inherit; }
    doesn't collide with the title/nav content anchored at the bottom. */
 @media (max-width: 379px) {
   :root {
-    --lighthouse-asset: 950px;
-    --lantern-top: 240px;
-    --burst-size: 720px;
-    --land-asset: 1200px;
-    --land-mid-y: 82vh;
+    --lighthouse-asset: 1500px;
+    --lantern-top: 110px;
+    --burst-size: 1150px;
+    --land-asset: 430px;
+    --land-peak-y: 63vh;
   }
 }
 
@@ -563,12 +574,18 @@ a { color: inherit; }
    prose constrained for readability, release grid splits to 2 columns. */
 @media (min-width: 768px) {
   :root {
-    --lighthouse-asset: 1400px;
-    --lantern-top: 360px;
+    --lighthouse-asset: 2400px;
+    --lantern-top: 150px;
     --lantern-x: 50%;
-    --burst-size: 1050px;
-    --land-asset: 1900px;
-    --land-mid-y: 82vh;
+    --burst-size: 1850px;
+    /* Same cropped land-mobile.png — wider/shorter aspect (3.25)
+       keeps cliff terminating high enough to leave title space.
+       Just scale up the displayed asset size for tablet. */
+    --land-asset: 750px;
+    --land-aspect: 3.25;
+    --land-peak-x: 0.5;
+    --land-peak-y-frac: 0.209;
+    --land-peak-y: 65vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
   }
@@ -577,7 +594,9 @@ a { color: inherit; }
     background-size: auto, 500px 500px;
   }
 
-  /* Tablet adds a 4th cloud drifting lower-left. */
+  /* Tablet reveals the 3rd cloud (atmospheric layer) and adds the
+     4th cloud (cloud-d, lower-left) for depth. */
+  .cloud-c { display: block; }
   .cloud-d { display: block; }
 
   .section {
@@ -605,12 +624,16 @@ a { color: inherit; }
    note about getting desktop closer to v1. */
 @media (min-width: 1024px) {
   :root {
-    --lighthouse-asset: 1170px;
-    --lantern-top: 360px;
+    --lighthouse-asset: 1900px;
+    --lantern-top: 80px;
     --lantern-x: 50%;
-    --burst-size: 1170px;
-    --land-asset: 1700px;
-    --land-mid-y: 78vh;
+    --burst-size: 1500px;
+    /* Smaller cliff at desktop so it terminates above title area. */
+    --land-asset: 850px;
+    --land-aspect: 3.25;
+    --land-peak-x: 0.5;
+    --land-peak-y-frac: 0.209;
+    --land-peak-y: 65vh;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
@@ -644,11 +667,10 @@ a { color: inherit; }
 
     <!-- Back-burst (z-3) → Land/cliff (z-4) → Lighthouse (z-5) → Content (z-6).
          Burst rays appear behind the cliff; the cliff sits under the lighthouse
-         base; the lighthouse sits on top; title + nav float above all of it. -->
+         base; the lighthouse sits on top; title + nav float above all of it.
+         Land uses background-image so mobile/desktop can swap assets per @media. -->
     <div class="back-burst" aria-hidden="true"></div>
-    <img class="land"
-         src="land-in-place.png"
-         alt="">
+    <div class="land" aria-hidden="true"></div>
     <img class="lighthouse"
          src="lighthouse-in-place-CENTERED.png"
          alt="Woodcut illustration of a lighthouse on a cliff at dusk, beams of light radiating out behind it">
