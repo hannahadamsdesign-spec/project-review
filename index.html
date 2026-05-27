@@ -90,11 +90,17 @@
      aspect 2.0, peak at asset x=52.5%, y=14.3%). Wider aspect means
      asset extends edge-to-edge on viewport without being too tall.
      Static vh positioning for consistent Safari behavior. */
-  --land-asset: 500px;
-  --land-aspect: 2.0;
+  /* Iter23: re-cropped land-mobile.png (2000×925, aspect 2.162) with
+     peak at y=0 of asset (no transparent buffer above peak). Cliff
+     peak positioned at 60vh — BELOW the lighthouse rocks bottom (58vh)
+     — so cliff content never extends up into the rocks zone where
+     transparent gaps in the lighthouse asset would show cliff content
+     through. */
+  --land-asset: 380px;
+  --land-aspect: 2.162;
   --land-peak-x: 0.525;
-  --land-peak-y-frac: 0.143;
-  --land-peak-y: 54vh;
+  --land-peak-y-frac: 0.0;
+  --land-peak-y: 60vh;
   --land-image: url('land-mobile.png');
 
   /* Layout */
@@ -334,14 +340,13 @@ a { color: inherit; }
 /* ============ HERO CONTENT (title + nav) ============
    Anchored to the bottom of the hero with minimal gutter so the
    title sits close to the cliff base. */
-/* Title + nav anchored to bottom 25% of viewport, in a clean dark
-   band BELOW all hero artwork. Hard rule per Hannah: title must
-   NEVER overlap the lighthouse / cliff / cloud animation.
-   Iter20: increased bottom padding from 4vh to 7vh + safe-area inset
-   to ensure clearance from cliff on iPhone Safari. */
+/* Title + nav anchored to bottom of viewport. Hard rule per Hannah:
+   title must NEVER overlap the lighthouse / cliff / cloud animation.
+   Iter23: smaller bottom padding (3vh) since cliff is now smaller and
+   positioned higher, leaving title area lower in viewport. */
 .hero-content {
   position: absolute;
-  bottom: calc(7vh + env(safe-area-inset-bottom, 0px));
+  bottom: calc(3vh + env(safe-area-inset-bottom, 0px));
   left: 0;
   right: 0;
   padding: 0 24px;
@@ -583,8 +588,8 @@ a { color: inherit; }
     --lighthouse-asset: 1150px;
     --lantern-top: 155px;
     --burst-size: 900px;
-    --land-asset: 400px;
-    --land-peak-y: 54vh;
+    --land-asset: 340px;
+    --land-peak-y: 58vh;
   }
 }
 
@@ -596,11 +601,11 @@ a { color: inherit; }
     --lantern-top: 220px;
     --lantern-x: 50%;
     --burst-size: 1400px;
-    --land-asset: 800px;
-    --land-aspect: 2.0;
+    --land-asset: 650px;
+    --land-aspect: 2.162;
     --land-peak-x: 0.525;
-    --land-peak-y-frac: 0.143;
-    --land-peak-y: 58vh;
+    --land-peak-y-frac: 0.0;
+    --land-peak-y: 62vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
   }
@@ -643,11 +648,11 @@ a { color: inherit; }
     --lantern-top: 170px;
     --lantern-x: 50%;
     --burst-size: 1150px;
-    --land-asset: 1100px;
-    --land-aspect: 2.0;
+    --land-asset: 900px;
+    --land-aspect: 2.162;
     --land-peak-x: 0.525;
-    --land-peak-y-frac: 0.143;
-    --land-peak-y: 60vh;
+    --land-peak-y-frac: 0.0;
+    --land-peak-y: 62vh;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
