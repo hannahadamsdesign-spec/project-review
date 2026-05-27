@@ -87,12 +87,16 @@
 
   /* Land/cliff — MOBILE uses cropped land-mobile.png (2600×800,
      aspect 3.25, peak at asset x=50%, y=20.9%). Tablet/desktop
-     switch to full land-in-place.png below. */
+     swap displayed size below. --land-peak-y computed dynamically
+     from lighthouse position so the cliff peak always lands at the
+     lighthouse's visible bottom edge regardless of viewport height.
+     Lighthouse visible art bottom = lantern_top + (0.761 - 0.513) × asset
+     = lantern_top + 0.248 × asset. */
   --land-asset: 480px;
   --land-aspect: 3.25;
   --land-peak-x: 0.5;
   --land-peak-y-frac: 0.209;
-  --land-peak-y: 65vh;
+  --land-peak-y: calc(var(--lantern-top) + 0.248 * var(--lighthouse-asset));
   --land-image: url('land-mobile.png');
 
   /* Layout */
@@ -566,7 +570,6 @@ a { color: inherit; }
     --lantern-top: 110px;
     --burst-size: 1150px;
     --land-asset: 430px;
-    --land-peak-y: 63vh;
   }
 }
 
@@ -585,7 +588,6 @@ a { color: inherit; }
     --land-aspect: 3.25;
     --land-peak-x: 0.5;
     --land-peak-y-frac: 0.209;
-    --land-peak-y: 65vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
   }
@@ -633,7 +635,6 @@ a { color: inherit; }
     --land-aspect: 3.25;
     --land-peak-x: 0.5;
     --land-peak-y-frac: 0.209;
-    --land-peak-y: 65vh;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
