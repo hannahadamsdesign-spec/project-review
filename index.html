@@ -90,11 +90,11 @@
      aspect 2.0, peak at asset x=52.5%, y=14.3%). Wider aspect means
      asset extends edge-to-edge on viewport without being too tall.
      Static vh positioning for consistent Safari behavior. */
-  --land-asset: 460px;
+  --land-asset: 500px;
   --land-aspect: 2.0;
   --land-peak-x: 0.525;
   --land-peak-y-frac: 0.143;
-  --land-peak-y: 56vh;
+  --land-peak-y: 54vh;
   --land-image: url('land-mobile.png');
 
   /* Layout */
@@ -148,6 +148,21 @@ a { color: inherit; }
   height: 100svh;
   min-height: 580px;
   overflow: hidden;
+}
+
+/* Subtle dark gradient at the bottom of the hero — frames the title +
+   nav area in a slightly deeper black band, matching the contained
+   dark zone visible in Hannah's PS mockup below the cliff. */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+  z-index: 5;
 }
 
 /* Cloud layers — painted greyscale clouds clustered in the UPPER region
