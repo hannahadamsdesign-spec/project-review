@@ -73,30 +73,29 @@
 
      Mobile baseline below. Small-phone, tablet, and desktop overrides
      in media queries near the bottom of this stylesheet. */
-  /* Iter15 — mobile architecture matching Hannah's detail mockup.
-     Lighthouse asset has visible art only in middle 30% (content y=47..76%),
-     so asset size must be ~3x bigger than the visible art we want.
-     Target: lighthouse fills ~60% of viewport vertical, base at 65vh.
-     - Lighthouse: lantern at ~14vh, base (rocky pile) at ~65vh
-     - Cliff: jagged silhouette, edge-to-edge, peak at 65vh under base
-     - Title: clean dark band at bottom, no animation overlap */
-  --lighthouse-asset: 1700px;
-  --lantern-top: 125px;
+  /* Iter19 — mobile architecture refined against Hannah's side-by-side comp.
+     - Lighthouse smaller (1420 not 1700) → ~50% of viewport vertical
+     - Lantern moves slightly down to 160px
+     - Cliff cropped to taller aspect (1.5 not 3.25) → more visible content
+     - Cliff peak sits slightly ABOVE lighthouse rocks bottom (multiplier
+       0.22 not 0.248) so rocks visibly protrude above the cliff peak,
+       cliff appears BEHIND the rocks at the contact point
+     - Title sits in clean dark band below all hero artwork */
+  --lighthouse-asset: 1420px;
+  --lantern-top: 160px;
   --lantern-x: 50%;
-  --burst-size: 1300px;
+  --burst-size: 1100px;
 
-  /* Land/cliff — MOBILE uses cropped land-mobile.png (2600×800,
-     aspect 3.25, peak at asset x=50%, y=20.9%). Tablet/desktop
+  /* Land/cliff — MOBILE uses cropped land-mobile.png (1650×1100,
+     aspect 1.5, peak at asset x=57.6%, y=14.8%). Tablet/desktop
      swap displayed size below. --land-peak-y computed dynamically
-     from lighthouse position so the cliff peak always lands at the
-     lighthouse's visible bottom edge regardless of viewport height.
-     Lighthouse visible art bottom = lantern_top + (0.761 - 0.513) × asset
-     = lantern_top + 0.248 × asset. */
-  --land-asset: 480px;
-  --land-aspect: 3.25;
-  --land-peak-x: 0.5;
-  --land-peak-y-frac: 0.209;
-  --land-peak-y: calc(var(--lantern-top) + 0.248 * var(--lighthouse-asset));
+     from lighthouse position so cliff peak is right at (or slightly
+     above) lighthouse rocks bottom. */
+  --land-asset: 440px;
+  --land-aspect: 1.5;
+  --land-peak-x: 0.576;
+  --land-peak-y-frac: 0.148;
+  --land-peak-y: calc(var(--lantern-top) + 0.22 * var(--lighthouse-asset));
   --land-image: url('land-mobile.png');
 
   /* Layout */
@@ -566,10 +565,10 @@ a { color: inherit; }
    doesn't collide with the title/nav content anchored at the bottom. */
 @media (max-width: 379px) {
   :root {
-    --lighthouse-asset: 1500px;
-    --lantern-top: 110px;
-    --burst-size: 1150px;
-    --land-asset: 430px;
+    --lighthouse-asset: 1250px;
+    --lantern-top: 140px;
+    --burst-size: 960px;
+    --land-asset: 400px;
   }
 }
 
@@ -577,17 +576,15 @@ a { color: inherit; }
    prose constrained for readability, release grid splits to 2 columns. */
 @media (min-width: 768px) {
   :root {
-    --lighthouse-asset: 2400px;
-    --lantern-top: 150px;
+    --lighthouse-asset: 2000px;
+    --lantern-top: 180px;
     --lantern-x: 50%;
-    --burst-size: 1850px;
-    /* Same cropped land-mobile.png — wider/shorter aspect (3.25)
-       keeps cliff terminating high enough to leave title space.
-       Just scale up the displayed asset size for tablet. */
-    --land-asset: 750px;
-    --land-aspect: 3.25;
-    --land-peak-x: 0.5;
-    --land-peak-y-frac: 0.209;
+    --burst-size: 1550px;
+    /* Updated to match the new aspect-1.5 cropped land-mobile.png. */
+    --land-asset: 650px;
+    --land-aspect: 1.5;
+    --land-peak-x: 0.576;
+    --land-peak-y-frac: 0.148;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
   }
@@ -626,15 +623,14 @@ a { color: inherit; }
    note about getting desktop closer to v1. */
 @media (min-width: 1024px) {
   :root {
-    --lighthouse-asset: 1900px;
-    --lantern-top: 80px;
+    --lighthouse-asset: 1600px;
+    --lantern-top: 140px;
     --lantern-x: 50%;
-    --burst-size: 1500px;
-    /* Smaller cliff at desktop so it terminates above title area. */
-    --land-asset: 850px;
-    --land-aspect: 3.25;
-    --land-peak-x: 0.5;
-    --land-peak-y-frac: 0.209;
+    --burst-size: 1250px;
+    --land-asset: 600px;
+    --land-aspect: 1.5;
+    --land-peak-x: 0.576;
+    --land-peak-y-frac: 0.148;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
