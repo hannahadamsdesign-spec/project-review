@@ -73,24 +73,27 @@
 
      Mobile baseline below. Small-phone, tablet, and desktop overrides
      in media queries near the bottom of this stylesheet. */
-  /* Iter20 — more conservative cliff position to prevent any title
-     overlap on iPhone Safari (where 100svh varies with chrome state).
-     - Lighthouse smaller (1300) — less dominant, room for cliff
-     - Cliff smaller (380) — leaves 100+ px clearance below to title
-     - Title padding-bottom increased from 4vh to 7vh */
+  /* Iter21 — wider cropped cliff for edge-to-edge feel + fixed z-index.
+     Z-index layering (back to front):
+       1 — body background (storm-grey gif)
+       2 — back-burst (spinning rays)
+       3 — clouds (in front of burst, behind lighthouse/land)
+       4 — land/cliff
+       5 — lighthouse
+       6 — hero content (title + nav) */
   --lighthouse-asset: 1300px;
   --lantern-top: 175px;
   --lantern-x: 50%;
   --burst-size: 1050px;
 
-  /* Land/cliff — MOBILE uses cropped land-mobile.png (1650×1100,
-     aspect 1.5, peak at asset x=57.6%, y=14.8%). Static vh-based
-     positioning (not calc) for predictable behavior across Safari
-     chrome states on iOS. */
-  --land-asset: 380px;
-  --land-aspect: 1.5;
-  --land-peak-x: 0.576;
-  --land-peak-y-frac: 0.148;
+  /* Land/cliff — MOBILE uses cropped land-mobile.png (2000×1000,
+     aspect 2.0, peak at asset x=52.5%, y=14.3%). Wider aspect means
+     asset extends edge-to-edge on viewport without being too tall.
+     Static vh positioning for consistent Safari behavior. */
+  --land-asset: 460px;
+  --land-aspect: 2.0;
+  --land-peak-x: 0.525;
+  --land-peak-y-frac: 0.143;
   --land-peak-y: 56vh;
   --land-image: url('land-mobile.png');
 
@@ -158,7 +161,9 @@ a { color: inherit; }
   position: absolute;
   background-repeat: no-repeat;
   background-size: contain;
-  z-index: 2;
+  /* z-index 3: clouds sit IN FRONT of the back-burst (z-2) but BEHIND
+     the lighthouse (z-5) and land (z-4) — per Hannah's spec. */
+  z-index: 3;
   pointer-events: none;
   animation: cloud-breathe 24s ease-in-out infinite;
 }
@@ -266,7 +271,9 @@ a { color: inherit; }
   animation: burst-rotate 240s linear infinite;
   transform-origin: center center;
   opacity: 0.9;
-  z-index: 3;
+  /* z-2: back-burst is the LOWEST z-layer (above body bg). Clouds (3),
+     land (4), lighthouse (5) all appear in front of the spinning burst. */
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -566,7 +573,7 @@ a { color: inherit; }
     --lighthouse-asset: 1150px;
     --lantern-top: 155px;
     --burst-size: 900px;
-    --land-asset: 340px;
+    --land-asset: 400px;
     --land-peak-y: 54vh;
   }
 }
@@ -579,10 +586,10 @@ a { color: inherit; }
     --lantern-top: 220px;
     --lantern-x: 50%;
     --burst-size: 1400px;
-    --land-asset: 560px;
-    --land-aspect: 1.5;
-    --land-peak-x: 0.576;
-    --land-peak-y-frac: 0.148;
+    --land-asset: 800px;
+    --land-aspect: 2.0;
+    --land-peak-x: 0.525;
+    --land-peak-y-frac: 0.143;
     --land-peak-y: 58vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
@@ -626,10 +633,10 @@ a { color: inherit; }
     --lantern-top: 170px;
     --lantern-x: 50%;
     --burst-size: 1150px;
-    --land-asset: 520px;
-    --land-aspect: 1.5;
-    --land-peak-x: 0.576;
-    --land-peak-y-frac: 0.148;
+    --land-asset: 1100px;
+    --land-aspect: 2.0;
+    --land-peak-x: 0.525;
+    --land-peak-y-frac: 0.143;
     --land-peak-y: 60vh;
   }
 
