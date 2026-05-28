@@ -344,13 +344,14 @@ a { color: inherit; }
 /* ============ HERO CONTENT (title + nav) ============
    Anchored to the bottom of the hero with minimal gutter so the
    title sits close to the cliff base. */
-/* Title + nav anchored to bottom of viewport. Hard rule per Hannah:
-   title must NEVER overlap the lighthouse / cliff / cloud animation.
-   Iter23: smaller bottom padding (3vh) since cliff is now smaller and
-   positioned higher, leaving title area lower in viewport. */
+/* Title + nav lifted UP to sit just below the cliff base (per Hannah's
+   mockup). Hard rule: must NEVER overlap the cliff or other artwork.
+   Iter31: bottom padding 18vh — content cluster pulled up significantly
+   so LEITHAUS title is close to the cliff base rather than at the very
+   bottom of the viewport. */
 .hero-content {
   position: absolute;
-  bottom: calc(3vh + env(safe-area-inset-bottom, 0px));
+  bottom: calc(18vh + env(safe-area-inset-bottom, 0px));
   left: 0;
   right: 0;
   padding: 0 24px;
