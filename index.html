@@ -191,42 +191,46 @@ a { color: inherit; }
   animation: cloud-breathe 24s ease-in-out infinite;
 }
 
-/* Cloud A — top-left silhouette (newcloud-01: 1584×669, aspect 2.37).
-   Iter12: switched to wide-narrow horizontal silhouette per PS comp.
-   Smaller, simpler — clouds are framing details, not focal points. */
+/* Iter30 — cloud assignments per Hannah's spec:
+     • newcloud-05 = BACK layer (largest, faintest atmospheric cloud)
+     • newcloud-01 = RIGHT side (wide layered cloud)
+     • newcloud-04 = TOP/FRONT (heavy blocky multi-lobe cluster, top-left)
+   Z-order is DOM order — back rendered first, top rendered last. */
+
+/* Cloud A = BACK LAYER (newcloud-05, 1435×590, aspect 2.43).
+   Spread wide across the top, lower opacity — atmospheric depth. */
 .cloud-a {
   top: 0vh;
-  left: -3vw;
-  width: 35vw;
-  aspect-ratio: 2.37;
-  background-image: url('newcloud-01.png');
-  background-position: top left;
-  opacity: 0.85;
-}
-
-/* Cloud B — top-right silhouette (newcloud-05: 1435×590, aspect 2.43). */
-.cloud-b {
-  top: 1vh;
-  right: -3vw;
-  width: 32vw;
+  left: -8vw;
+  width: 70vw;
   aspect-ratio: 2.43;
   background-image: url('newcloud-05.png');
+  background-position: top center;
+  opacity: 0.55;
+}
+
+/* Cloud B = RIGHT cloud (newcloud-01, 1584×669, aspect 2.37). */
+.cloud-b {
+  top: 0vh;
+  right: -4vw;
+  width: 42vw;
+  aspect-ratio: 2.37;
+  background-image: url('newcloud-01.png');
   background-position: top right;
-  opacity: 0.8;
+  opacity: 0.85;
   animation-delay: -10s;
 }
 
-/* Cloud C — hidden on mobile (2 clouds only on phones per PS comp).
-   Revealed at tablet+ as a third atmospheric layer. */
+/* Cloud C = TOP/FRONT cluster (newcloud-04, 1150×1068, aspect 1.08).
+   Top-left, heavy blocky multi-lobe — the dominant visual mass. */
 .cloud-c {
-  display: none;
-  top: 8vh;
-  left: 30vw;
-  width: 28vw;
+  top: -2vh;
+  left: -4vw;
+  width: 38vw;
   aspect-ratio: 1.08;
   background-image: url('newcloud-04.png');
-  background-position: top center;
-  opacity: 0.75;
+  background-position: top left;
+  opacity: 0.95;
   animation-delay: -16s;
 }
 
@@ -612,9 +616,8 @@ a { color: inherit; }
     background-size: auto, 500px 500px;
   }
 
-  /* Tablet reveals the 3rd cloud (atmospheric layer) and adds the
-     4th cloud (cloud-d, lower-left) for depth. */
-  .cloud-c { display: block; }
+  /* Tablet adds the 4th cloud for depth. (Cloud-c is shown on mobile
+     too now since it's the dominant top-left cluster.) */
   .cloud-d { display: block; }
 
   .section {
@@ -673,8 +676,9 @@ a { color: inherit; }
        ======================================================== -->
   <section class="hero" id="top" aria-label="Leithaus">
 
-    <!-- Painted greyscale clouds, clustered in the upper region.
-         Mobile shows A/B/C; D appears at tablet+, E at desktop. -->
+    <!-- Painted greyscale clouds, DOM order = z-order (back to front):
+         cloud-a (newcloud-05, BACK), cloud-b (newcloud-01, RIGHT),
+         cloud-c (newcloud-04, TOP/FRONT). Mobile shows all three. -->
     <div class="cloud cloud-a" aria-hidden="true"></div>
     <div class="cloud cloud-b" aria-hidden="true"></div>
     <div class="cloud cloud-c" aria-hidden="true"></div>
