@@ -90,17 +90,16 @@
      aspect 2.0, peak at asset x=52.5%, y=14.3%). Wider aspect means
      asset extends edge-to-edge on viewport without being too tall.
      Static vh positioning for consistent Safari behavior. */
-  /* Iter23: re-cropped land-mobile.png (2000×925, aspect 2.162) with
-     peak at y=0 of asset (no transparent buffer above peak). Cliff
-     peak positioned at 60vh — BELOW the lighthouse rocks bottom (58vh)
-     — so cliff content never extends up into the rocks zone where
-     transparent gaps in the lighthouse asset would show cliff content
-     through. */
-  --land-asset: 380px;
+  /* Iter24: cliff moved BACK UP to 55vh (near lighthouse rocks bottom)
+     so the lighthouse appears INTEGRATED with cliff (no floating gap).
+     The mask-image on .land fades the top to transparent, preventing
+     the cliff art from bleeding through transparent gaps in the
+     lighthouse rocky base. Net visual: rocks sit cleanly on cliff peak. */
+  --land-asset: 420px;
   --land-aspect: 2.162;
   --land-peak-x: 0.525;
   --land-peak-y-frac: 0.0;
-  --land-peak-y: 60vh;
+  --land-peak-y: 55vh;
   --land-image: url('land-mobile.png');
 
   /* Layout */
@@ -303,7 +302,11 @@ a { color: inherit; }
    land-in-place.png). z-index 4 puts it BEHIND the lighthouse (z 5)
    so the lighthouse stands clearly in front of the cliff.
    Asset positioned by its PEAK coordinate so the lighthouse base
-   lands directly on the cliff peak. */
+   lands directly on the cliff peak.
+   Iter24: mask-image fades the top 10% of the asset to transparent —
+   this lets cliff peak overlap with lighthouse rocks zone without
+   bleeding cliff content through the transparent gaps in the
+   lighthouse asset's rocky base. */
 .land {
   position: absolute;
   width: var(--land-asset);
@@ -313,6 +316,8 @@ a { color: inherit; }
   left: var(--lantern-x);
   margin-left: calc(var(--land-asset) * (var(--land-peak-x) * -1));
   margin-top: calc((var(--land-asset) / var(--land-aspect)) * (var(--land-peak-y-frac) * -1));
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 5%, black 12%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 5%, black 12%, black 100%);
   pointer-events: none;
   z-index: 4;
 }
@@ -588,8 +593,8 @@ a { color: inherit; }
     --lighthouse-asset: 1150px;
     --lantern-top: 155px;
     --burst-size: 900px;
-    --land-asset: 340px;
-    --land-peak-y: 58vh;
+    --land-asset: 380px;
+    --land-peak-y: 53vh;
   }
 }
 
@@ -601,11 +606,11 @@ a { color: inherit; }
     --lantern-top: 220px;
     --lantern-x: 50%;
     --burst-size: 1400px;
-    --land-asset: 650px;
+    --land-asset: 720px;
     --land-aspect: 2.162;
     --land-peak-x: 0.525;
     --land-peak-y-frac: 0.0;
-    --land-peak-y: 62vh;
+    --land-peak-y: 58vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
   }
@@ -648,11 +653,11 @@ a { color: inherit; }
     --lantern-top: 170px;
     --lantern-x: 50%;
     --burst-size: 1150px;
-    --land-asset: 900px;
+    --land-asset: 1000px;
     --land-aspect: 2.162;
     --land-peak-x: 0.525;
     --land-peak-y-frac: 0.0;
-    --land-peak-y: 62vh;
+    --land-peak-y: 58vh;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
