@@ -134,7 +134,7 @@ body {
   /* Storm-grey gif behind a 50% black overlay, fixed-attachment so
      the texture stays put behind every section. */
   background:
-    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
     url('storm-bg-opt.webp') repeat;
   background-attachment: fixed, fixed;
   background-size: auto, 300px 300px;
@@ -358,19 +358,25 @@ a { color: inherit; }
 /* ============ HERO CONTENT (title + nav) ============
    Anchored to the bottom of the hero with minimal gutter so the
    title sits close to the cliff base. */
-/* Title + nav positioning. Hard rule: must NEVER overlap the cliff
-   or other artwork. Iter33: dropped from 18vh to 8vh — 18vh worked
-   on taller viewports (Chrome 1005px) but overlapped on iPhone (852px
-   viewport). 8vh provides ~48px clearance below cliff on iPhone and
-   ~189px on Chrome — consistent across heights. */
+/* Title + nav anchored to LAND position via calc() — consistent
+   across viewport heights regardless of device. Title sits just
+   below the cliff art (top ~25% of land asset), with the black
+   extension visually framing it. Iter37: anchored to land, parallax
+   scroll handler in JS at bottom of file moves it at 0.5x scroll. */
 .hero-content {
   position: absolute;
-  bottom: calc(8vh + env(safe-area-inset-bottom, 0px));
+  top: calc(
+    var(--lantern-top)
+    + 0.22 * var(--lighthouse-asset)
+    - 15px
+    + 0.28 * var(--land-asset) / var(--land-aspect)
+  );
   left: 0;
   right: 0;
   padding: 0 24px;
   text-align: center;
   z-index: 8;
+  will-change: transform;
 }
 
 .hero-title {
@@ -848,6 +854,41 @@ a { color: inherit; }
 
     <p class="footer-copy">&copy; 2026 Leithaus</p>
   </footer>
+
+
+<script>
+  /* Iter37 — parallax scroll on hero-content (LEITHAUS title + nav).
+     Text translates UP at 0.5x scroll rate — stays visible longer than
+     the lighthouse + land as user scrolls down. Respects prefers-reduced-
+     motion. rAF-throttled for smooth 60fps. */
+  (function() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const heroContent = document.querySelector('.hero-content');
+    const hero = document.querySelector('.hero');
+    if (!heroContent || !hero) return;
+
+    let lastY = 0;
+    let ticking = false;
+    const parallaxFactor = 0.5; // text moves at 50% of scroll rate
+
+    function update() {
+      // Apply parallax only while hero is in/near viewport
+      if (lastY < hero.offsetHeight) {
+        heroContent.style.transform = `translateY(${-lastY * parallaxFactor}px)`;
+      }
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      lastY = window.scrollY;
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
+</script>
 
 </body>
 </html>
