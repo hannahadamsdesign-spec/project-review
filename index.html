@@ -90,15 +90,15 @@
      aspect 2.0, peak at asset x=52.5%, y=14.3%). Wider aspect means
      asset extends edge-to-edge on viewport without being too tall.
      Static vh positioning for consistent Safari behavior. */
-  /* Iter26: land/cliff IN FRONT of lighthouse (z=5 > z=4). Land peak
-     positioned at ~46vh — just above where the lighthouse tower base
-     starts widening into the rocky pile (~43vh in viewport). The
-     painted cliff art covers the lighthouse rocks, providing the
-     "rocks in front of lighthouse" look Hannah wants. */
+  /* Iter27: land in FRONT of lighthouse (z=5 > z=4). Re-cropped asset
+     centered on the MIDPOINT between two peaks. Peak 1 at crop_x=0.25,
+     Peak 2 at crop_x=0.75 — both peaks visible on screen symmetric
+     around viewport center. Wider aspect (3.08) means cliff is shorter,
+     making the two-peak silhouette more prominent. */
   --land-asset: 540px;
-  --land-aspect: 2.162;
-  --land-peak-x: 0.525;
-  --land-peak-y-frac: 0.0;
+  --land-aspect: 3.081;
+  --land-peak-x: 0.5;
+  --land-peak-y-frac: 0.013;
   --land-peak-y: 46vh;
   --land-image: url('land-mobile.png');
 
@@ -588,6 +588,7 @@ a { color: inherit; }
     --land-asset: 480px;
     --land-peak-y: 44vh;
   }
+  .land { aspect-ratio: 3.081; }
 }
 
 /* Tablets (768-1023) — iPad portrait. Larger lighthouse, more padding,
@@ -599,9 +600,9 @@ a { color: inherit; }
     --lantern-x: 50%;
     --burst-size: 1400px;
     --land-asset: 900px;
-    --land-aspect: 2.162;
-    --land-peak-x: 0.525;
-    --land-peak-y-frac: 0.0;
+    --land-aspect: 3.081;
+    --land-peak-x: 0.5;
+    --land-peak-y-frac: 0.013;
     --land-peak-y: 49vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
@@ -646,9 +647,9 @@ a { color: inherit; }
     --lantern-x: 50%;
     --burst-size: 1150px;
     --land-asset: 1300px;
-    --land-aspect: 2.162;
-    --land-peak-x: 0.525;
-    --land-peak-y-frac: 0.0;
+    --land-aspect: 3.081;
+    --land-peak-x: 0.5;
+    --land-peak-y-frac: 0.013;
     --land-peak-y: 49vh;
   }
 
