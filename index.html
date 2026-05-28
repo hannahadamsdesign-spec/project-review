@@ -198,35 +198,38 @@ a { color: inherit; }
    Z-order is DOM order — back rendered first, top rendered last. */
 
 /* Cloud A = BACK LAYER (newcloud-05, 1435×590, aspect 2.43).
-   Spread wide across the top, lower opacity — atmospheric depth. */
+   Iter32: opacity bumped from 0.55 to 0.75 so it actually fills the
+   top band and helps the cloud frame border the burst rays. */
 .cloud-a {
   top: 0vh;
-  left: -8vw;
-  width: 70vw;
+  left: -10vw;
+  width: 90vw;
   aspect-ratio: 2.43;
   background-image: url('newcloud-05.png');
   background-position: top center;
-  opacity: 0.55;
+  opacity: 0.75;
 }
 
-/* Cloud B = RIGHT cloud (newcloud-01, 1584×669, aspect 2.37). */
+/* Cloud B = RIGHT cloud (newcloud-01, 1584×812, aspect 1.951).
+   Iter32: file updated by Hannah to new aspect; bumped 20% bigger
+   (42vw → 50vw) per Hannah's note. */
 .cloud-b {
   top: 0vh;
   right: -4vw;
-  width: 42vw;
-  aspect-ratio: 2.37;
+  width: 50vw;
+  aspect-ratio: 1.951;
   background-image: url('newcloud-01.png');
   background-position: top right;
-  opacity: 0.85;
+  opacity: 0.9;
   animation-delay: -10s;
 }
 
 /* Cloud C = TOP/FRONT cluster (newcloud-04, 1150×1068, aspect 1.08).
-   Top-left, heavy blocky multi-lobe — the dominant visual mass. */
+   Iter32: slightly larger (38vw → 44vw) for denser left-corner mass. */
 .cloud-c {
-  top: -2vh;
+  top: -3vh;
   left: -4vw;
-  width: 38vw;
+  width: 44vw;
   aspect-ratio: 1.08;
   background-image: url('newcloud-04.png');
   background-position: top left;
