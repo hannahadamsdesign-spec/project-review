@@ -205,7 +205,7 @@ a { color: inherit; }
   left: -10vw;
   width: 90vw;
   aspect-ratio: 2.43;
-  background-image: url('newcloud-05.png');
+  background-image: url('cloud-back.png');
   background-position: top center;
   opacity: 0.75;
 }
@@ -218,7 +218,7 @@ a { color: inherit; }
   right: -4vw;
   width: 50vw;
   aspect-ratio: 1.951;
-  background-image: url('newcloud-01.png');
+  background-image: url('cloud-right.png');
   background-position: top right;
   opacity: 0.9;
   animation-delay: -10s;
@@ -231,7 +231,7 @@ a { color: inherit; }
   left: -4vw;
   width: 44vw;
   aspect-ratio: 1.08;
-  background-image: url('newcloud-04.png');
+  background-image: url('cloud-top-left.png');
   background-position: top left;
   opacity: 0.95;
   animation-delay: -16s;
@@ -245,7 +245,7 @@ a { color: inherit; }
   left: -6vw;
   width: 50vw;
   aspect-ratio: 2.37;
-  background-image: url('newcloud-01.png');
+  background-image: url('cloud-right.png');
   background-position: top left;
   opacity: 0.55;
   animation-delay: -22s;
@@ -259,7 +259,7 @@ a { color: inherit; }
   right: -5vw;
   width: 40vw;
   aspect-ratio: 2.43;
-  background-image: url('newcloud-05.png');
+  background-image: url('cloud-back.png');
   background-position: top right;
   opacity: 0.55;
   animation-delay: -28s;
@@ -347,14 +347,14 @@ a { color: inherit; }
 /* ============ HERO CONTENT (title + nav) ============
    Anchored to the bottom of the hero with minimal gutter so the
    title sits close to the cliff base. */
-/* Title + nav lifted UP to sit just below the cliff base (per Hannah's
-   mockup). Hard rule: must NEVER overlap the cliff or other artwork.
-   Iter31: bottom padding 18vh — content cluster pulled up significantly
-   so LEITHAUS title is close to the cliff base rather than at the very
-   bottom of the viewport. */
+/* Title + nav positioning. Hard rule: must NEVER overlap the cliff
+   or other artwork. Iter33: dropped from 18vh to 8vh — 18vh worked
+   on taller viewports (Chrome 1005px) but overlapped on iPhone (852px
+   viewport). 8vh provides ~48px clearance below cliff on iPhone and
+   ~189px on Chrome — consistent across heights. */
 .hero-content {
   position: absolute;
-  bottom: calc(18vh + env(safe-area-inset-bottom, 0px));
+  bottom: calc(8vh + env(safe-area-inset-bottom, 0px));
   left: 0;
   right: 0;
   padding: 0 24px;
