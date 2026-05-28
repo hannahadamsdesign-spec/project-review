@@ -90,16 +90,16 @@
      aspect 2.0, peak at asset x=52.5%, y=14.3%). Wider aspect means
      asset extends edge-to-edge on viewport without being too tall.
      Static vh positioning for consistent Safari behavior. */
-  /* Iter24: cliff moved BACK UP to 55vh (near lighthouse rocks bottom)
-     so the lighthouse appears INTEGRATED with cliff (no floating gap).
-     The mask-image on .land fades the top to transparent, preventing
-     the cliff art from bleeding through transparent gaps in the
-     lighthouse rocky base. Net visual: rocks sit cleanly on cliff peak. */
-  --land-asset: 420px;
+  /* Iter26: land/cliff IN FRONT of lighthouse (z=5 > z=4). Land peak
+     positioned at ~46vh — just above where the lighthouse tower base
+     starts widening into the rocky pile (~43vh in viewport). The
+     painted cliff art covers the lighthouse rocks, providing the
+     "rocks in front of lighthouse" look Hannah wants. */
+  --land-asset: 540px;
   --land-aspect: 2.162;
   --land-peak-x: 0.525;
   --land-peak-y-frac: 0.0;
-  --land-peak-y: 55vh;
+  --land-peak-y: 46vh;
   --land-image: url('land-mobile.png');
 
   /* Layout */
@@ -297,16 +297,11 @@ a { color: inherit; }
   to   { transform: scaleY(0.75) rotate(360deg); }
 }
 
-/* Land/cliff layer — background-image div so we can swap assets per
-   breakpoint (mobile uses cropped land-mobile.png; tablet+ uses full
-   land-in-place.png). z-index 4 puts it BEHIND the lighthouse (z 5)
-   so the lighthouse stands clearly in front of the cliff.
-   Asset positioned by its PEAK coordinate so the lighthouse base
-   lands directly on the cliff peak.
-   Iter24: mask-image fades the top 10% of the asset to transparent —
-   this lets cliff peak overlap with lighthouse rocks zone without
-   bleeding cliff content through the transparent gaps in the
-   lighthouse asset's rocky base. */
+/* Land/cliff layer — z=5, sandwiched BETWEEN the lighthouse tower (z=4)
+   and the lighthouse rocks (z=6). The cliff covers the tower's bottom
+   edge (hiding the rough cut-off of the tower asset), while the rocks
+   sit IN FRONT of the cliff. No mask on the cliff itself — visibility
+   is controlled by the lighthouse layer masks above and below. */
 .land {
   position: absolute;
   width: var(--land-asset);
@@ -316,30 +311,27 @@ a { color: inherit; }
   left: var(--lantern-x);
   margin-left: calc(var(--land-asset) * (var(--land-peak-x) * -1));
   margin-top: calc((var(--land-asset) / var(--land-aspect)) * (var(--land-peak-y-frac) * -1));
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 5%, black 12%, black 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 5%, black 12%, black 100%);
   pointer-events: none;
-  z-index: 4;
+  z-index: 5;
 }
 
+/* Iter26 — single lighthouse layer at z=4. The land/cliff layer at
+   z=5 sits IN FRONT of the lighthouse, visually replacing the
+   lighthouse asset's rocky base with the painted cliff art (which
+   is Hannah's intended look — cliff "rocks" in front of lighthouse,
+   covering the tower's lower edge). */
 .lighthouse {
   position: absolute;
-  /* IMPORTANT: !important required because the base
-     `img { max-width: 100%; height: auto; }` rule clamps img elements
-     to their parent's width. We need this lighthouse to overflow the
-     viewport, so override max-width here. */
   width: var(--lighthouse-asset);
   height: var(--lighthouse-asset);
   max-width: none;
-  /* Asset top-left positioned so the LANTERN (at 51.3% from asset top,
-     50.5% from asset left) lands at (--lantern-x, --lantern-top). */
   top: var(--lantern-top);
   left: var(--lantern-x);
   margin-top: calc(var(--lighthouse-asset) * -0.513);
   margin-left: calc(var(--lighthouse-asset) * -0.505);
   object-fit: contain;
   pointer-events: none;
-  z-index: 5;
+  z-index: 4;
 }
 
 /* ============ HERO CONTENT (title + nav) ============
@@ -356,7 +348,7 @@ a { color: inherit; }
   right: 0;
   padding: 0 24px;
   text-align: center;
-  z-index: 6;
+  z-index: 8;
 }
 
 .hero-title {
@@ -593,8 +585,8 @@ a { color: inherit; }
     --lighthouse-asset: 1150px;
     --lantern-top: 155px;
     --burst-size: 900px;
-    --land-asset: 380px;
-    --land-peak-y: 53vh;
+    --land-asset: 480px;
+    --land-peak-y: 44vh;
   }
 }
 
@@ -606,11 +598,11 @@ a { color: inherit; }
     --lantern-top: 220px;
     --lantern-x: 50%;
     --burst-size: 1400px;
-    --land-asset: 720px;
+    --land-asset: 900px;
     --land-aspect: 2.162;
     --land-peak-x: 0.525;
     --land-peak-y-frac: 0.0;
-    --land-peak-y: 58vh;
+    --land-peak-y: 49vh;
     --section-pad-x: 60px;
     --section-pad-y: 120px;
   }
@@ -653,11 +645,11 @@ a { color: inherit; }
     --lantern-top: 170px;
     --lantern-x: 50%;
     --burst-size: 1150px;
-    --land-asset: 1000px;
+    --land-asset: 1300px;
     --land-aspect: 2.162;
     --land-peak-x: 0.525;
     --land-peak-y-frac: 0.0;
-    --land-peak-y: 58vh;
+    --land-peak-y: 49vh;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
@@ -689,15 +681,15 @@ a { color: inherit; }
     <div class="cloud cloud-d" aria-hidden="true"></div>
     <div class="cloud cloud-e" aria-hidden="true"></div>
 
-    <!-- Back-burst (z-3) → Land/cliff (z-4) → Lighthouse (z-5) → Content (z-6).
-         Burst rays appear behind the cliff; the cliff sits under the lighthouse
-         base; the lighthouse sits on top; title + nav float above all of it.
-         Land uses background-image so mobile/desktop can swap assets per @media. -->
+    <!-- Layering (back to front): burst (z-2) → clouds (z-3) →
+         lighthouse (z-4) → land/cliff (z-5) → hero-content (z-8).
+         The land sits IN FRONT of the lighthouse — the painted cliff
+         art covers the lighthouse's rocky base, visually replacing it. -->
     <div class="back-burst" aria-hidden="true"></div>
-    <div class="land" aria-hidden="true"></div>
     <img class="lighthouse"
          src="lighthouse-in-place-CENTERED.png"
-         alt="Woodcut illustration of a lighthouse on a cliff at dusk, beams of light radiating out behind it">
+         alt="Woodcut illustration of a lighthouse at dusk, beams of light radiating out behind it">
+    <div class="land" aria-hidden="true"></div>
 
     <!-- Title + section nav, anchored to bottom of hero -->
     <div class="hero-content">
