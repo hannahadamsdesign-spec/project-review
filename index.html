@@ -201,13 +201,15 @@ a { color: inherit; }
      • newcloud-04 = TOP/FRONT (heavy blocky multi-lobe cluster, top-left)
    Z-order is DOM order — back rendered first, top rendered last. */
 
-/* Cloud A = BACK LAYER (newcloud-05, 1435×590, aspect 2.43).
-   Iter32: opacity bumped from 0.55 to 0.75 so it actually fills the
-   top band and helps the cloud frame border the burst rays. */
+/* Cloud A = BACK LAYER (cloud-back.png, was newcloud-05, aspect 2.43).
+   Iter35: shrunk 35% (90vw → 60vw), centered (left: 20vw), lifted 30px
+   above viewport top so only the BOTTOM portion shows — peeking down
+   from behind the other clouds. DOM order puts it behind cloud-b and
+   cloud-c. */
 .cloud-a {
-  top: 0vh;
-  left: -10vw;
-  width: 90vw;
+  top: -30px;
+  left: 20vw;
+  width: 60vw;
   aspect-ratio: 2.43;
   background-image: url('cloud-back.png');
   background-position: top center;
