@@ -424,6 +424,41 @@ a { color: inherit; }
 }
 
 /* ====================================================================
+   PAINT-BACKGROUND PARALLAX (Boat-style depth break)
+   ==================================================================== */
+
+/* Painted brush-stroke bands that sit just below the hero, providing a
+   subtle background-depth break between the hero and the content
+   sections. Scroll at a slower rate than the page via JS at bottom. */
+.paint-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.paint-bg-1 {
+  /* Sits just below the hero; the painted strokes appear from underneath
+     the land's black extension as user scrolls down. */
+  top: 95vh;
+  height: 28vh;
+  background: url('paint-background-01-opt.png') no-repeat center top;
+  background-size: 110vw auto;
+  opacity: 0.5;
+}
+
+.paint-bg-2 {
+  /* A second deeper band, further down in the page, more dilute. */
+  top: 150vh;
+  height: 22vh;
+  background: url('paint-background-02-opt.png') no-repeat left center;
+  background-size: 90vw auto;
+  opacity: 0.35;
+}
+
+/* ====================================================================
    CONTENT SECTIONS
    ==================================================================== */
 
@@ -733,6 +768,12 @@ a { color: inherit; }
   </section>
 
 
+  <!-- Iter39: paint-background parallax layers — sit between hero and
+       content, scroll at slower-than-page rate (Boat-style depth break).
+       Hidden from screen readers. -->
+  <div class="paint-bg paint-bg-1" aria-hidden="true"></div>
+  <div class="paint-bg paint-bg-2" aria-hidden="true"></div>
+
   <!-- ========================================================
        CONTENT
        ======================================================== -->
@@ -857,25 +898,26 @@ a { color: inherit; }
 
 
 <script>
-  /* Iter37 — parallax scroll on hero-content (LEITHAUS title + nav).
-     Text translates UP at 0.5x scroll rate — stays visible longer than
-     the lighthouse + land as user scrolls down. Respects prefers-reduced-
-     motion. rAF-throttled for smooth 60fps. */
+  /* Iter37 + Iter39 — parallax scroll on multiple layers.
+     Each layer moves at a different rate to create depth perception.
+     rAF-throttled for smooth 60fps. Respects prefers-reduced-motion. */
   (function() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    const heroContent = document.querySelector('.hero-content');
-    const hero = document.querySelector('.hero');
-    if (!heroContent || !hero) return;
+    const layers = [
+      { el: document.querySelector('.hero-content'), rate: 0.5, max: null },
+      { el: document.querySelector('.paint-bg-1'),   rate: 0.3, max: null },
+      { el: document.querySelector('.paint-bg-2'),   rate: 0.2, max: null },
+    ].filter(l => l.el);
+
+    if (!layers.length) return;
 
     let lastY = 0;
     let ticking = false;
-    const parallaxFactor = 0.5; // text moves at 50% of scroll rate
 
     function update() {
-      // Apply parallax only while hero is in/near viewport
-      if (lastY < hero.offsetHeight) {
-        heroContent.style.transform = `translateY(${-lastY * parallaxFactor}px)`;
+      for (const layer of layers) {
+        layer.el.style.transform = `translateY(${-lastY * layer.rate}px)`;
       }
       ticking = false;
     }
