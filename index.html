@@ -81,10 +81,14 @@
        4 — land/cliff
        5 — lighthouse
        6 — hero content (title + nav) */
-  --lighthouse-asset: 1300px;
-  --lantern-top: 175px;
+  /* Iter34: unified vh-based scaling — composition stays
+     proportionally consistent across iPhone (852), Brave (varying),
+     Safari simulator (1250) by deriving sizes from viewport HEIGHT
+     with clamp() bounds. */
+  --lighthouse-asset: clamp(950px, 152vh, 1500px);
+  --lantern-top: clamp(120px, 20vh, 230px);
   --lantern-x: 50%;
-  --burst-size: 1050px;
+  --burst-size: clamp(750px, 123vh, 1200px);
 
   /* Land/cliff — MOBILE uses cropped land-mobile.png (2000×1000,
      aspect 2.0, peak at asset x=52.5%, y=14.3%). Wider aspect means
@@ -98,7 +102,7 @@
      that would otherwise extend below the land.
      LAND IS NOW ANCHORED TO LIGHTHOUSE via calc(). Both move together
      as a unit if --lantern-top or --lighthouse-asset change. */
-  --land-asset: 700px;
+  --land-asset: clamp(500px, 82vh, 800px);
   --land-aspect: 1.59;
   --land-peak-x: 0.5;
   --land-peak-y-frac: 0.0;
