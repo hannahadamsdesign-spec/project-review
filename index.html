@@ -790,8 +790,58 @@ a { color: inherit; }
     display: block;
   }
 
-  /* Iter46: desktop no longer reveals extra clouds. PSD has only two
-     corner cluster, which render across all breakpoints. */
+  /* Iter48: desktop CLOUD CLUSTERS — bring back the extras and
+     position them so each top corner reads as a dense cluster of
+     overlapping clouds, mostly cropped off-screen at the top. PSD
+     intent: more clouds at desktop, not fewer. They hang from the
+     very top edge with only their lower portions visible. As the
+     viewport narrows they collapse back to the mobile two-cluster
+     look (default rules). */
+  .cloud-c {
+    /* Top-left front cluster — lifted higher, slightly larger */
+    top: -10vh;
+    left: -3vw;
+    width: 32vw;
+    max-width: 520px;
+    opacity: 0.8;
+  }
+
+  .cloud-a {
+    /* Top-left back cluster, offset right so it overlaps cloud-c */
+    display: block;
+    top: -12vh;
+    left: 12vw;
+    width: 30vw;
+    max-width: 480px;
+    aspect-ratio: 2.43;
+    background-image: url('cloud-back-opt.webp');
+    background-position: top center;
+    opacity: 0.5;
+    animation-delay: -28s;
+  }
+
+  .cloud-b {
+    /* Top-right front cluster — lifted higher */
+    top: -8vh;
+    right: -3vw;
+    width: 30vw;
+    max-width: 480px;
+    opacity: 0.75;
+  }
+
+  .cloud-e {
+    /* Top-right back cluster, offset left so it overlaps cloud-b */
+    display: block;
+    top: -11vh;
+    right: 14vw;
+    width: 22vw;
+    max-width: 340px;
+    aspect-ratio: 2.43;
+    background-image: url('cloud-back-opt.webp');
+    background-position: top right;
+    opacity: 0.55;
+    animation-delay: -22s;
+  }
 
   /* Iter47: mask the bottom-right corner of the land asset on desktop.
      The mobile land PNG has a black painted extension that blends
