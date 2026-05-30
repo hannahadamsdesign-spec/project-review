@@ -265,9 +265,22 @@ a { color: inherit; }
   display: none;
 }
 
-/* Cloud E — hidden in iter46 (PSD has no lower-right cloud).
-   Kept the rule in case it's wanted back later. */
+/* Cloud E — base hidden; desktop ≥1024px reveals it as part of the
+   top-right cluster (iter48+). */
 .cloud-e {
+  display: none;
+}
+
+/* Cloud F + G — iter49 desktop-only accent clouds added to densify
+   the corner cluster per Hannah's PSD intent. Use the cloud-extra
+   assets that were sitting unused in .
+   Hidden on mobile/tablet so the lean two-cluster layout there
+   stays unchanged. */
+.cloud-f {
+  display: none;
+}
+
+.cloud-g {
   display: none;
 }
 
@@ -790,29 +803,32 @@ a { color: inherit; }
     display: block;
   }
 
-  /* Iter48: desktop CLOUD CLUSTERS — bring back the extras and
-     position them so each top corner reads as a dense cluster of
-     overlapping clouds, mostly cropped off-screen at the top. PSD
-     intent: more clouds at desktop, not fewer. They hang from the
-     very top edge with only their lower portions visible. As the
-     viewport narrows they collapse back to the mobile two-cluster
-     look (default rules). */
+  /* Iter49: desktop CLOUD CLUSTERS — final sizing per Hannah.
+     Each corner has THREE overlapping clouds: a front layer (b/c),
+     a back layer offset to create depth (a/e), and a small accent
+     (f/g, from the cloud-extra assets) to fill gaps.
+     Max-widths are the ceiling — clouds can move apart but never
+     get bigger than these values. Middle-back and right-side clouds
+     brought lower (less negative top) per Hannah's feedback that
+     they were too cropped. */
+
+  /* ============ TOP-LEFT CLUSTER ============ */
   .cloud-c {
-    /* Top-left front cluster — lifted higher, slightly larger */
+    /* Front layer — most visible */
     top: -10vh;
     left: -3vw;
-    width: 32vw;
-    max-width: 520px;
+    width: 26vw;
+    max-width: 416px;
     opacity: 0.8;
   }
 
   .cloud-a {
-    /* Top-left back cluster, offset right so it overlaps cloud-c */
+    /* Back layer — offset right to overlap cloud-c; LOWER per Hannah */
     display: block;
-    top: -12vh;
-    left: 12vw;
-    width: 30vw;
-    max-width: 480px;
+    top: -6vh;
+    left: 10vw;
+    width: 24vw;
+    max-width: 384px;
     aspect-ratio: 2.43;
     background-image: url('cloud-back-opt.webp');
     background-position: top center;
@@ -820,27 +836,62 @@ a { color: inherit; }
     animation-delay: -28s;
   }
 
+  .cloud-f {
+    /* Small accent — fills bottom-left of the cluster */
+    display: block;
+    position: absolute;
+    top: -2vh;
+    left: 4vw;
+    width: 14vw;
+    max-width: 224px;
+    aspect-ratio: 1.66;
+    background-image: url('cloud-extra-1-opt.webp');
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.6;
+    animation-delay: -18s;
+  }
+
+  /* ============ TOP-RIGHT CLUSTER ============ */
   .cloud-b {
-    /* Top-right front cluster — lifted higher */
-    top: -8vh;
+    /* Front layer — LOWER per Hannah */
+    top: -4vh;
     right: -3vw;
-    width: 30vw;
-    max-width: 480px;
+    width: 24vw;
+    max-width: 384px;
     opacity: 0.75;
   }
 
   .cloud-e {
-    /* Top-right back cluster, offset left so it overlaps cloud-b */
+    /* Back layer — offset left to overlap cloud-b; LOWER per Hannah */
     display: block;
-    top: -11vh;
-    right: 14vw;
-    width: 22vw;
-    max-width: 340px;
+    top: -6vh;
+    right: 12vw;
+    width: 18vw;
+    max-width: 272px;
     aspect-ratio: 2.43;
     background-image: url('cloud-back-opt.webp');
     background-position: top right;
     opacity: 0.55;
     animation-delay: -22s;
+  }
+
+  .cloud-g {
+    /* Small accent — fills bottom-right of the cluster */
+    display: block;
+    position: absolute;
+    top: -2vh;
+    right: 6vw;
+    width: 14vw;
+    max-width: 224px;
+    aspect-ratio: 1.97;
+    background-image: url('cloud-extra-2-opt.webp');
+    background-position: top right;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.65;
+    animation-delay: -14s;
   }
 
   /* Iter47: mask the bottom-right corner of the land asset on desktop.
@@ -881,6 +932,9 @@ a { color: inherit; }
     <div class="cloud cloud-c" aria-hidden="true"></div>
     <div class="cloud cloud-d" aria-hidden="true"></div>
     <div class="cloud cloud-e" aria-hidden="true"></div>
+    <!-- Iter49: desktop-only accent clouds for cluster density (extras) -->
+    <div class="cloud cloud-f" aria-hidden="true"></div>
+    <div class="cloud cloud-g" aria-hidden="true"></div>
 
     <!-- Layering (back to front): burst (z-2) → clouds (z-3) →
          lighthouse (z-4) → land/cliff (z-5) → hero-content (z-8).
