@@ -15,8 +15,8 @@
 
 <!-- Iter36: preload above-fold critical hero images so they start
      fetching before CSS parses, eliminating layout shift on load. -->
-<link rel="preload" as="image" href="04 Website PNG and SVG/lighthouse-opt.webp" type="image/webp">
-<link rel="preload" as="image" href="04 Website PNG and SVG/land-mobile-black-extension-opt.png" type="image/png">
+<link rel="preload" as="image" href="lighthouse-opt.webp" type="image/webp">
+<link rel="preload" as="image" href="land-mobile-black-extension-opt.png" type="image/png">
 
 <style>
 /* ====================================================================
@@ -112,7 +112,7 @@
   --land-peak-x: 0.5;
   --land-peak-y-frac: 0.0;
   --land-peak-y: calc(var(--lantern-top) + 0.22 * var(--lighthouse-asset) - 15px);
-  --land-image: url('04 Website PNG and SVG/land-mobile-black-extension-opt.png');
+  --land-image: url('land-mobile-black-extension-opt.png');
 
   /* Layout */
   --section-pad-x: 24px;
@@ -135,7 +135,7 @@ body {
      the texture stays put behind every section. */
   background:
     linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    url('04 Website PNG and SVG/storm-bg-opt.webp') repeat;
+    url('storm-bg-opt.webp') repeat;
   background-attachment: fixed, fixed;
   background-size: auto, 300px 300px;
   background-color: var(--ink);
@@ -216,7 +216,7 @@ a { color: inherit; }
   left: 20vw;
   width: 60vw;
   aspect-ratio: 2.43;
-  background-image: url('04 Website PNG and SVG/cloud-back-opt.webp');
+  background-image: url('cloud-back-opt.webp');
   background-position: top center;
   opacity: 0.75;
 }
@@ -229,7 +229,7 @@ a { color: inherit; }
   right: -4vw;
   width: 50vw;
   aspect-ratio: 1.951;
-  background-image: url('04 Website PNG and SVG/cloud-right-opt.webp');
+  background-image: url('cloud-right-opt.webp');
   background-position: top right;
   opacity: 0.9;
   animation-delay: -10s;
@@ -242,7 +242,7 @@ a { color: inherit; }
   left: -4vw;
   width: 44vw;
   aspect-ratio: 1.08;
-  background-image: url('04 Website PNG and SVG/cloud-top-left-opt.webp');
+  background-image: url('cloud-top-left-opt.webp');
   background-position: top left;
   opacity: 0.95;
   animation-delay: -16s;
@@ -256,7 +256,7 @@ a { color: inherit; }
   left: -6vw;
   width: 50vw;
   aspect-ratio: 2.37;
-  background-image: url('04 Website PNG and SVG/cloud-right-opt.webp');
+  background-image: url('cloud-right-opt.webp');
   background-position: top left;
   opacity: 0.55;
   animation-delay: -22s;
@@ -270,7 +270,7 @@ a { color: inherit; }
   right: -5vw;
   width: 40vw;
   aspect-ratio: 2.43;
-  background-image: url('04 Website PNG and SVG/cloud-back-opt.webp');
+  background-image: url('cloud-back-opt.webp');
   background-position: top right;
   opacity: 0.55;
   animation-delay: -28s;
@@ -302,7 +302,7 @@ a { color: inherit; }
   left: var(--lantern-x);
   margin-top: calc(var(--burst-size) / -2);
   margin-left: calc(var(--burst-size) / -2);
-  background: url('04 Website PNG and SVG/back-layer-burst-CENTERED.svg') no-repeat center / contain;
+  background: url('back-layer-burst-CENTERED.svg') no-repeat center / contain;
   transform: scaleY(0.75);
   animation: burst-rotate 240s linear infinite;
   transform-origin: center center;
@@ -446,7 +446,7 @@ a { color: inherit; }
      are visible against the dark page background. */
   top: 95vh;
   height: 28vh;
-  background: url('04 Website PNG and SVG/paint-background-01-opt.png') no-repeat center top;
+  background: url('paint-background-01-opt.png') no-repeat center top;
   background-size: 110vw auto;
   opacity: 0.6;
   filter: invert(1) brightness(0.9);
@@ -456,7 +456,7 @@ a { color: inherit; }
   /* A second deeper band, further down in the page, more dilute. */
   top: 150vh;
   height: 22vh;
-  background: url('04 Website PNG and SVG/paint-background-02-opt.png') no-repeat left center;
+  background: url('paint-background-02-opt.png') no-repeat left center;
   background-size: 90vw auto;
   opacity: 0.45;
   filter: invert(1) brightness(0.9);
@@ -767,9 +767,9 @@ a { color: inherit; }
          art covers the lighthouse's rocky base, visually replacing it. -->
     <div class="back-burst" aria-hidden="true"></div>
     <picture>
-      <source srcset="04 Website PNG and SVG/lighthouse-opt.webp" type="image/webp">
+      <source srcset="lighthouse-opt.webp" type="image/webp">
       <img class="lighthouse"
-           src="04 Website PNG and SVG/lighthouse-opt.png"
+           src="lighthouse-opt.png"
            alt="Woodcut illustration of a lighthouse at dusk, beams of light radiating out behind it">
     </picture>
     <div class="land" aria-hidden="true"></div>
