@@ -212,6 +212,13 @@ a { color: inherit; }
   z-index: 3;
   pointer-events: none;
   animation: cloud-breathe 24s ease-in-out infinite;
+  /* Iter45: the source PNGs are BLACK fills with WHITE sketch outlines.
+     Without a blend mode, the black fill reads as a dense painted cloud
+     against the dark page bg — wrong character. With `lighten`, the
+     black fill becomes invisible (page bg shows through) and only the
+     light outlines remain visible. Matches Hannah's PSD intent: line-
+     drawn, airy clouds rather than opaque painted blobs. */
+  mix-blend-mode: lighten;
 }
 
 /* Iter30 — cloud assignments per Hannah's spec:
