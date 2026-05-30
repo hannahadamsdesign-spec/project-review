@@ -761,7 +761,12 @@ a { color: inherit; }
        left on a 1440 viewport). Lower values push further left. */
     --lantern-x: 28%;
     --burst-size: 1150px;
-    --land-asset: 1600px;
+    /* Iter50: shrunk land asset from 1600px to 500px on desktop per
+       Hannah's PSD/v1 reference. The cliff base should be just the
+       rocky outcrop around the lighthouse, not a half-viewport-wide
+       mass. Mobile/tablet keep their larger values where the cliff
+       legitimately fills more of the frame. */
+    --land-asset: 500px;
     --land-aspect: 1.59;
     --land-peak-x: 0.5;
     --land-peak-y-frac: 0.0;
