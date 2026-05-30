@@ -159,19 +159,26 @@ a { color: inherit; }
    HERO
    ==================================================================== */
 
-/* Iter43 — Self-contained scene architecture.
-   Hero is now MIN-height (not fixed height). It grows to contain the
-   absolutely-positioned hero composition AND the flow-positioned
-   title/nav block, so the nav can no longer extend past the hero's
-   clip boundary. When user scrolls, the whole hero scrolls off as
-   one scene; content section starts cleanly below with no overlap. */
+/* Iter44 — CSS Grid Stage pattern for art-directed responsive composition.
+   Mobile: single grid area, brand block stays flow-positioned under cliff
+     (current iter43 behavior preserved).
+   Desktop (≥1024px, see media query below): two-column grid, lighthouse
+     anchors LEFT via --lantern-x override, brand block sits in the RIGHT
+     column vertically centered.
+   All the absolute-positioned scene elements (lighthouse, clouds, land,
+   bursts) ignore grid placement — they anchor to .hero's positioned box
+   via the --lantern-x/--lantern-top coordinate system. The grid is only
+   used to place the flow-positioned brand block.
+   Reference: Pudding's responsive-scrollytelling piece + modern CSS Grid
+   Stage pattern. Art direction at the layout layer, not just the asset layer. */
 .hero {
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: "stage";
 }
 
 /* Subtle dark gradient at the bottom of the hero — frames the title +
@@ -376,6 +383,11 @@ a { color: inherit; }
    Also removed parallax translate (was 0.5x via JS) — the hero scene
    now scrolls off as a single unit, no occlusion with content below. */
 .hero-content {
+  /* Mobile: shares the "stage" grid area with the lighthouse composition.
+     margin-top calc anchors the brand block just below the cliff peak.
+     Desktop override below moves it to its own "brand" grid area. */
+  grid-area: stage;
+  align-self: start;
   position: relative;
   margin-top: calc(
     var(--lantern-top)
@@ -386,6 +398,24 @@ a { color: inherit; }
   padding: 0 24px 60px;
   text-align: center;
   z-index: 8;
+}
+
+/* Right-side land slot — desktop only. Empty by default; Hannah will
+   drop a balancing painted-land asset in here later, anchored to the
+   right edge of the viewport to complete the desktop composition.
+   Hidden on mobile/tablet so it doesn't waste bytes or paint cycles
+   on smaller screens. */
+.land-right {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 30vw;
+  max-width: 600px;
+  aspect-ratio: 1.2;
+  background: var(--land-right-image, none) no-repeat right bottom / contain;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .hero-title {
@@ -733,12 +763,51 @@ a { color: inherit; }
   :root {
     --lighthouse-asset: 1450px;
     --lantern-top: 170px;
-    --lantern-x: 50%;
+    /* Iter44: lighthouse anchors LEFT on desktop. 28% from left edge
+       lands it roughly where Hannah's PSD comp has it (about 1/5 from
+       left on a 1440 viewport). Lower values push further left. */
+    --lantern-x: 28%;
     --burst-size: 1150px;
     --land-asset: 1600px;
     --land-aspect: 1.59;
     --land-peak-x: 0.5;
     --land-peak-y-frac: 0.0;
+  }
+
+  /* Iter44: hero becomes a 2-column grid on desktop. Lighthouse
+     composition (all absolute-positioned) occupies the left visual
+     zone via --lantern-x. Brand block (LEITHAUS title + section nav)
+     sits in the right column, vertically centered. */
+  .hero {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "scene brand";
+  }
+
+  .hero-content {
+    grid-area: brand;
+    align-self: center;
+    justify-self: center;
+    margin-top: 0;
+    padding: 0 48px;
+    max-width: 480px;
+  }
+
+  /* Hero title can run larger on desktop now that it has its own column.
+     This keeps it from feeling small floating in the brand area. */
+  .hero-title {
+    font-size: clamp(56px, 5.5vw, 88px);
+  }
+
+  /* Nav items sized up to match the larger desktop title. */
+  .section-nav a {
+    font-size: 20px;
+  }
+
+  /* Right-side balancing land asset slot — visible at desktop only.
+     CSS var --land-right-image controls the background; set it on
+     :root when the asset lands to activate. */
+  .land-right {
+    display: block;
   }
 
   /* Desktop reveals the 5th cloud on the right side. */
@@ -776,6 +845,11 @@ a { color: inherit; }
          The land sits IN FRONT of the lighthouse — the painted cliff
          art covers the lighthouse's rocky base, visually replacing it. -->
     <div class="back-burst" aria-hidden="true"></div>
+
+    <!-- Iter44: right-side balancing land slot. Desktop only (CSS hides on
+         mobile/tablet). Empty until Hannah's asset lands — set
+         --land-right-image on :root or .hero to activate. -->
+    <div class="land-right" aria-hidden="true"></div>
     <picture>
       <source srcset="lighthouse-opt.webp" type="image/webp">
       <img class="lighthouse"
