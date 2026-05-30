@@ -795,13 +795,16 @@ a { color: inherit; }
      column placement (iter44–iter53) was hard to read once the lighthouse
      dropped to the bottom — the title floated alone in dead space.
      Centered above the lighthouse, the title reads as the page brand
-     mark, with the section nav stacked below it. */
+     mark, with the section nav stacked below it.
+     Iter55: margin-top bumped 60 → 460 (+400px) per Hannah. Title now
+     sits roughly at the vertical midpoint of the hero rather than near
+     the top. */
   .hero-content {
     grid-column: 1 / -1;
     grid-row: 1;
     align-self: start;
     justify-self: center;
-    margin-top: 60px;
+    margin-top: 460px;
     padding: 0 48px;
     max-width: 560px;
   }
@@ -835,12 +838,15 @@ a { color: inherit; }
 
   /* ============ TOP-LEFT CLUSTER ============ */
   .cloud-c {
-    /* Front layer — most visible */
+    /* Front layer — full opacity in iter55 so it actually covers the
+       burst rays behind it. Z-order has clouds at 3 above burst at 2,
+       but at 0.8 opacity the cloud's black fill was reading as ~20%
+       transparent over the bright burst — burst rays bled through. */
     top: -10vh;
     left: -3vw;
     width: 26vw;
     max-width: 416px;
-    opacity: 0.8;
+    opacity: 1;
   }
 
   .cloud-a {
@@ -853,7 +859,7 @@ a { color: inherit; }
     aspect-ratio: 2.43;
     background-image: url('cloud-back-opt.webp');
     background-position: top center;
-    opacity: 0.5;
+    opacity: 0.7;
     animation-delay: -28s;
   }
 
@@ -876,12 +882,12 @@ a { color: inherit; }
 
   /* ============ TOP-RIGHT CLUSTER ============ */
   .cloud-b {
-    /* Front layer — LOWER per Hannah */
+    /* Front layer — full opacity in iter55 to cover burst rays */
     top: -4vh;
     right: -3vw;
     width: 24vw;
     max-width: 384px;
-    opacity: 0.75;
+    opacity: 1;
   }
 
   .cloud-e {
@@ -894,7 +900,7 @@ a { color: inherit; }
     aspect-ratio: 2.43;
     background-image: url('cloud-back-opt.webp');
     background-position: top right;
-    opacity: 0.55;
+    opacity: 0.7;
     animation-delay: -22s;
   }
 
