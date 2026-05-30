@@ -762,19 +762,20 @@ a { color: inherit; }
        asset bottom around y=826 on a 900vh viewport — cliff
        and lighthouse base sit close to the page edge. */
     --lantern-top: 420px;
-    /* Iter52: lantern-x dropped from 28% to 15%. The land asset was
-       drawn with the cliff bleeding past its left edge, so the
-       composition wants the lighthouse pulled further left for the
-       cliff to extend off-screen rather than cutting cleanly inside
-       the viewport. Per Hannah's PSD reference. */
-    --lantern-x: 15%;
+    /* Iter53: lantern-x is now a FIXED PIXEL OFFSET (200px) instead
+       of a percentage. The land asset was drawn to bleed past the
+       left edge of the viewport, so we want a consistent anchor
+       point regardless of viewport width. At 200px from the left,
+       the 575px-wide land asset (centered on lantern, see below)
+       extends from -87 to 487 — the left ~87px always bleeds past
+       the viewport edge, on 1024 / 1440 / 1920 alike. */
+    --lantern-x: 200px;
     --burst-size: 1150px;
-    /* Iter50: shrunk land asset from 1600px to 500px on desktop per
-       Hannah's PSD/v1 reference. The cliff base should be just the
-       rocky outcrop around the lighthouse, not a half-viewport-wide
-       mass. Mobile/tablet keep their larger values where the cliff
-       legitimately fills more of the frame. */
-    --land-asset: 500px;
+    /* Iter53: land asset bumped 15% (500px → 575px) per Hannah's
+       sizing pick. Mobile/tablet keep their larger values where the
+       cliff legitimately fills more of the frame in the centered
+       composition. */
+    --land-asset: 575px;
     --land-aspect: 1.59;
     --land-peak-x: 0.5;
     --land-peak-y-frac: 0.0;
