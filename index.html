@@ -790,24 +790,31 @@ a { color: inherit; }
     grid-template-areas: "scene brand";
   }
 
+  /* Iter54: brand block now spans both columns and centers horizontally
+     near the TOP of the hero, per Hannah's v1 reference. The right-
+     column placement (iter44–iter53) was hard to read once the lighthouse
+     dropped to the bottom — the title floated alone in dead space.
+     Centered above the lighthouse, the title reads as the page brand
+     mark, with the section nav stacked below it. */
   .hero-content {
-    grid-area: brand;
-    align-self: center;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-self: start;
     justify-self: center;
-    margin-top: 0;
+    margin-top: 60px;
     padding: 0 48px;
-    max-width: 480px;
+    max-width: 560px;
   }
 
-  /* Hero title can run larger on desktop now that it has its own column.
-     This keeps it from feeling small floating in the brand area. */
+  /* Iter54: title shrunk from clamp(56,5.5vw,88px) → clamp(48,4.5vw,72px)
+     to match the v1 reference size. */
   .hero-title {
-    font-size: clamp(56px, 5.5vw, 88px);
+    font-size: clamp(48px, 4.5vw, 72px);
   }
 
-  /* Nav items sized up to match the larger desktop title. */
+  /* Nav items sized to match the new smaller title. */
   .section-nav a {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   /* Right-side balancing land asset slot — visible at desktop only.
