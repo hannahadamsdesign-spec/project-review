@@ -762,10 +762,12 @@ a { color: inherit; }
        asset bottom around y=826 on a 900vh viewport — cliff
        and lighthouse base sit close to the page edge. */
     --lantern-top: 420px;
-    /* Iter44: lighthouse anchors LEFT on desktop. 28% from left edge
-       lands it roughly where Hannah's PSD comp has it (about 1/5 from
-       left on a 1440 viewport). Lower values push further left. */
-    --lantern-x: 28%;
+    /* Iter52: lantern-x dropped from 28% to 15%. The land asset was
+       drawn with the cliff bleeding past its left edge, so the
+       composition wants the lighthouse pulled further left for the
+       cliff to extend off-screen rather than cutting cleanly inside
+       the viewport. Per Hannah's PSD reference. */
+    --lantern-x: 15%;
     --burst-size: 1150px;
     /* Iter50: shrunk land asset from 1600px to 500px on desktop per
        Hannah's PSD/v1 reference. The cliff base should be just the
