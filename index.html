@@ -159,12 +159,19 @@ a { color: inherit; }
    HERO
    ==================================================================== */
 
+/* Iter43 — Self-contained scene architecture.
+   Hero is now MIN-height (not fixed height). It grows to contain the
+   absolutely-positioned hero composition AND the flow-positioned
+   title/nav block, so the nav can no longer extend past the hero's
+   clip boundary. When user scrolls, the whole hero scrolls off as
+   one scene; content section starts cleanly below with no overlap. */
 .hero {
   position: relative;
-  height: 100vh;
-  height: 100svh;
-  min-height: 580px;
+  min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Subtle dark gradient at the bottom of the hero — frames the title +
@@ -361,22 +368,24 @@ a { color: inherit; }
 /* Title + nav anchored to LAND position via calc() — consistent
    across viewport heights regardless of device. Title sits just
    below the cliff art (top ~25% of land asset), with the black
-   extension visually framing it. Iter37: anchored to land, parallax
-   scroll handler in JS at bottom of file moves it at 0.5x scroll. */
+   extension visually framing it.
+   Iter43: switched from position:absolute to position:relative with
+   margin-top doing the same calc work. This way the title+nav block
+   contributes to the hero's flow height — the hero grows tall enough
+   to fully contain the nav, so overflow:hidden can no longer clip it.
+   Also removed parallax translate (was 0.5x via JS) — the hero scene
+   now scrolls off as a single unit, no occlusion with content below. */
 .hero-content {
-  position: absolute;
-  top: calc(
+  position: relative;
+  margin-top: calc(
     var(--lantern-top)
     + 0.22 * var(--lighthouse-asset)
     - 15px
     + 0.28 * var(--land-asset) / var(--land-aspect)
   );
-  left: 0;
-  right: 0;
-  padding: 0 24px;
+  padding: 0 24px 60px;
   text-align: center;
   z-index: 8;
-  will-change: transform;
 }
 
 .hero-title {
@@ -471,17 +480,18 @@ a { color: inherit; }
   z-index: 10;
 }
 
-/* Iter40: smooth transition at the top of the content section to hide
-   the visible "line" between the hero's pure-black extension and the
-   slightly-textured body background. Black at the very top, fades to
-   transparent over 100px so the body's storm-texture shows below. */
+/* Iter43: trimmed from 100px to 40px. With the hero now a self-contained
+   scene (no occlusion with content), this gradient only needs to soften
+   the visual seam between the hero's solid-black bottom and the body's
+   storm-texture background — it no longer has to mask a content/nav
+   overlap. Short, subtle, out of the way. */
 .content::before {
   content: '';
   position: absolute;
   top: -1px;
   left: 0;
   right: 0;
-  height: 100px;
+  height: 40px;
   background: linear-gradient(to bottom, #000 0%, transparent 100%);
   pointer-events: none;
   z-index: 1;
@@ -924,8 +934,10 @@ a { color: inherit; }
   (function() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    /* Iter43 — removed .hero-content from parallax. Title+nav now scroll
+       off naturally with the hero scene. Paint bands keep their slow-drift
+       parallax under the content section. */
     const layers = [
-      { el: document.querySelector('.hero-content'), rate: 0.5, max: null },
       { el: document.querySelector('.paint-bg-1'),   rate: 0.3, max: null },
       { el: document.querySelector('.paint-bg-2'),   rate: 0.2, max: null },
     ].filter(l => l.el);
