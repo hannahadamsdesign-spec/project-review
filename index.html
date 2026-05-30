@@ -755,7 +755,13 @@ a { color: inherit; }
 @media (min-width: 1024px) {
   :root {
     --lighthouse-asset: 1450px;
-    --lantern-top: 170px;
+    /* Iter51: lantern-top raised from 170 to 420 to ground the
+       lighthouse at the bottom of the viewport per v1 reference.
+       The lighthouse asset is 1450px with the lantern at 51.3%
+       (744px from asset top), so lantern-top of 420 lands the
+       asset bottom around y=826 on a 900vh viewport — cliff
+       and lighthouse base sit close to the page edge. */
+    --lantern-top: 420px;
     /* Iter44: lighthouse anchors LEFT on desktop. 28% from left edge
        lands it roughly where Hannah's PSD comp has it (about 1/5 from
        left on a 1440 viewport). Lower values push further left. */
@@ -899,17 +905,14 @@ a { color: inherit; }
     animation-delay: -14s;
   }
 
-  /* Iter47: mask the bottom-right corner of the land asset on desktop.
-     The mobile land PNG has a black painted extension that blends
-     seamlessly into the bottom of mobile viewports. On desktop the
-     extension renders as a faint dark rectangle against the storm-bg.
-     Two-axis mask: fade out the right edge AND the bottom edge with
-     a radial-style gradient that preserves the painted cliff (upper-
-     left of the asset) while killing the extension panel. */
-  .land {
-    -webkit-mask-image: linear-gradient(135deg, black 60%, transparent 85%);
-    mask-image: linear-gradient(135deg, black 60%, transparent 85%);
-  }
+  /* Iter51: iter47 mask removed. At the iter50-reduced land size
+     (500px instead of 1600px), the mask gradient itself became a
+     visible soft-edged rectangle artifact against the dark page bg
+     — worse than the original extension-panel issue it was meant
+     to solve. The smaller land asset's extension panel is also
+     proportionally smaller and less prominent. If the extension
+     becomes visible again, prefer a smaller, sharper mask or swap
+     to land-in-place.png (clean version, no extension). */
 
   .section {
     max-width: 760px;
