@@ -755,13 +755,10 @@ a { color: inherit; }
 @media (min-width: 1024px) {
   :root {
     --lighthouse-asset: 1450px;
-    /* Iter51: lantern-top raised from 170 to 420 to ground the
-       lighthouse at the bottom of the viewport per v1 reference.
-       The lighthouse asset is 1450px with the lantern at 51.3%
-       (744px from asset top), so lantern-top of 420 lands the
-       asset bottom around y=826 on a 900vh viewport — cliff
-       and lighthouse base sit close to the page edge. */
-    --lantern-top: 420px;
+    /* Iter56: lantern-top lowered 420 → 320 (lighthouse + land + burst
+       all shift up 100px per Hannah). Asset bottom now lands around
+       y=726 on a 900vh viewport — cliff base lifted off the very edge. */
+    --lantern-top: 320px;
     /* Iter53: lantern-x is now a FIXED PIXEL OFFSET (200px) instead
        of a percentage. The land asset was drawn to bleed past the
        left edge of the viewport, so we want a consistent anchor
@@ -798,13 +795,14 @@ a { color: inherit; }
      mark, with the section nav stacked below it.
      Iter55: margin-top bumped 60 → 460 (+400px) per Hannah. Title now
      sits roughly at the vertical midpoint of the hero rather than near
-     the top. */
+     the top. Iter56: pulled back 100px (460 → 360) per Hannah to
+     match the lighthouse lift. */
   .hero-content {
     grid-column: 1 / -1;
     grid-row: 1;
     align-self: start;
     justify-self: center;
-    margin-top: 460px;
+    margin-top: 360px;
     padding: 0 48px;
     max-width: 560px;
   }
