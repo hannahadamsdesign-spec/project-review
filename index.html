@@ -183,9 +183,12 @@ a { color: inherit; }
   grid-template-areas: "stage";
 }
 
-/* Subtle dark gradient at the bottom of the hero — frames the title +
-   nav area in a slightly deeper black band, matching the contained
-   dark zone visible in Hannah's PS mockup below the cliff. */
+/* Iter62: .hero::after removed. It was a dark gradient at the bottom
+   of the hero that framed the title area when the page bg was
+   invisible. Now that storm-bg has visible texture (iter59-60), the
+   gradient mutes the texture and reads as a dark band against the
+   surrounding visible bg. Rule kept commented for reference. */
+/*
 .hero::after {
   content: '';
   position: absolute;
@@ -197,6 +200,7 @@ a { color: inherit; }
   pointer-events: none;
   z-index: 5;
 }
+*/
 
 /* Cloud layers — painted greyscale clouds clustered in the UPPER region
    of the hero. Matching Hannah's Photoshop comp:
@@ -507,11 +511,13 @@ a { color: inherit; }
   z-index: 10;
 }
 
-/* Iter43: trimmed from 100px to 40px. With the hero now a self-contained
-   scene (no occlusion with content), this gradient only needs to soften
-   the visual seam between the hero's solid-black bottom and the body's
-   storm-texture background — it no longer has to mask a content/nav
-   overlap. Short, subtle, out of the way. */
+/* Iter62: .content::before removed. Was a 40px black-to-transparent
+   gradient at the top of the content section to soften the seam from
+   the hero's solid-dark bottom to the body bg. Now that both hero and
+   body share the same storm-bg texture (hero is transparent over body),
+   there IS no seam — and the gradient now reads as a visible dark
+   stripe over the textured bg. Rule kept commented for reference. */
+/*
 .content::before {
   content: '';
   position: absolute;
@@ -523,6 +529,7 @@ a { color: inherit; }
   pointer-events: none;
   z-index: 1;
 }
+*/
 
 .section {
   padding: var(--section-pad-y) var(--section-pad-x);
