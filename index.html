@@ -472,11 +472,12 @@ a { color: inherit; }
   will-change: transform;
 }
 
+/* Iter58: paint-bg layers hidden per Hannah. They were creating a
+   visible dark band between paint-bg-1 (ends at ~123vh) and paint-bg-2
+   (starts at ~150vh). Kept rules in place in case the painted-bg
+   pattern is wanted back later. */
 .paint-bg-1 {
-  /* Sits just below the hero; the painted strokes appear from underneath
-     the land's black extension as user scrolls down.
-     filter: invert flips the dark brush strokes to LIGHT strokes that
-     are visible against the dark page background. */
+  display: none;
   top: 95vh;
   height: 28vh;
   background: url('paint-background-01-opt.png') no-repeat center top;
@@ -486,7 +487,7 @@ a { color: inherit; }
 }
 
 .paint-bg-2 {
-  /* A second deeper band, further down in the page, more dilute. */
+  display: none;
   top: 150vh;
   height: 22vh;
   background: url('paint-background-02-opt.png') no-repeat left center;
