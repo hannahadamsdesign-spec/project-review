@@ -775,11 +775,19 @@ a { color: inherit; }
        sizing pick. Iter57: another 20% bigger → 690px. Lighthouse
        stays at 1450px; the calc keeps cliff peak anchored to
        lighthouse base since --land-peak-x stays at 0.5 of asset
-       width. Cliff just extends further down and right. */
-    --land-asset: 690px;
-    --land-aspect: 1.59;
-    --land-peak-x: 0.5;
-    --land-peak-y-frac: 0.0;
+       width. Cliff just extends further down and right.
+       Iter61: swapped asset to land-in-place.png (clean version
+       with no extension panel — fixes the dark rectangle that
+       appeared once storm-bg got visible texture). New asset is
+       5551×4621 with content at x=0-3858 (0-69.5%), y=2031-2977
+       (44-64%) — that's why peak-x and peak-y-frac change. Asset
+       size bumped to 1000px since the visible cliff is only 69.5%
+       of asset width. */
+    --land-asset: 1000px;
+    --land-aspect: 1.201;
+    --land-peak-x: 0.35;
+    --land-peak-y-frac: 0.44;
+    --land-image: url('land-in-place-opt.webp');
   }
 
   /* Iter44: hero becomes a 2-column grid on desktop. Lighthouse
