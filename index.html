@@ -131,13 +131,15 @@ html {
 }
 
 body {
-  /* Storm-grey gif behind a 50% black overlay, fixed-attachment so
-     the texture stays put behind every section. */
+  /* Iter59: swapped to storm-bg-opt-v4.webp (Hannah's brightest of four
+     versions, pixel range 11-40 vs v1's 6-23 — much more visible
+     brushwork). Dropped the 0.2 black overlay that was flattening the
+     texture into invisibility — texture now renders directly against
+     the dark page color so its brushstroke detail can read. */
   background:
-    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-    url('storm-bg-opt.webp') repeat;
-  background-attachment: fixed, fixed;
-  background-size: auto, 300px 300px;
+    url('storm-bg-opt-v4.webp') repeat;
+  background-attachment: fixed;
+  background-size: 300px 300px;
   background-color: var(--ink);
 
   color: var(--white);
