@@ -769,10 +769,11 @@ a { color: inherit; }
     --lantern-x: 200px;
     --burst-size: 1150px;
     /* Iter53: land asset bumped 15% (500px → 575px) per Hannah's
-       sizing pick. Mobile/tablet keep their larger values where the
-       cliff legitimately fills more of the frame in the centered
-       composition. */
-    --land-asset: 575px;
+       sizing pick. Iter57: another 20% bigger → 690px. Lighthouse
+       stays at 1450px; the calc keeps cliff peak anchored to
+       lighthouse base since --land-peak-x stays at 0.5 of asset
+       width. Cliff just extends further down and right. */
+    --land-asset: 690px;
     --land-aspect: 1.59;
     --land-peak-x: 0.5;
     --land-peak-y-frac: 0.0;
@@ -808,14 +809,17 @@ a { color: inherit; }
   }
 
   /* Iter54: title shrunk from clamp(56,5.5vw,88px) → clamp(48,4.5vw,72px)
-     to match the v1 reference size. */
+     to match the v1 reference size. Iter57: another 20% smaller per
+     Hannah — clamp(38,3.6vw,58px). */
   .hero-title {
-    font-size: clamp(48px, 4.5vw, 72px);
+    font-size: clamp(38px, 3.6vw, 58px);
   }
 
-  /* Nav items sized to match the new smaller title. */
+  /* Nav items sized to match the new smaller title. Iter57: weight 300
+     (lighter) per Hannah, was inheriting 400 from the base rule. */
   .section-nav a {
     font-size: 18px;
+    font-weight: 300;
   }
 
   /* Right-side balancing land asset slot — visible at desktop only.
